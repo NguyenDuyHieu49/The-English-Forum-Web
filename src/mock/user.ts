@@ -1,0 +1,101 @@
+import type { UserStats } from "@/types/gamification";
+
+export const MOCK_USER_STATS: UserStats = {
+  xp: 4850,
+  level: 12,
+  tokens: 340,
+  learningHours: 47,
+  focusScore: 87,
+  streak: {
+    daily: 14,
+    weekly: 3,
+    monthly: 1,
+    lastActiveDate: new Date().toISOString(),
+  },
+  pet: {
+    id: "pet-1",
+    name: "Mimi",
+    type: "cat",
+    level: 8,
+    experience: 720,
+    mood: "happy",
+    energy: 65,
+    evolutionStage: 2,
+  },
+  achievements: [
+    {
+      id: "a1",
+      title: "Quiz Master",
+      description: "Complete 100 quizzes",
+      icon: "🏆",
+      progress: 67,
+      target: 100,
+      unlocked: false,
+    },
+    {
+      id: "a2",
+      title: "Dedicated Learner",
+      description: "Study for 20 hours",
+      icon: "📚",
+      progress: 20,
+      target: 20,
+      unlocked: true,
+      unlockedAt: "2025-03-15",
+    },
+    {
+      id: "a3",
+      title: "Focus Champion",
+      description: "Achieve focus score above 90",
+      icon: "🎯",
+      progress: 87,
+      target: 90,
+      unlocked: false,
+    },
+    {
+      id: "a4",
+      title: "Speaking Pro",
+      description: "Practice speaking 50 times",
+      icon: "🎤",
+      progress: 32,
+      target: 50,
+      unlocked: false,
+    },
+    {
+      id: "a5",
+      title: "Week Warrior",
+      description: "Maintain a 7-day streak",
+      icon: "🔥",
+      progress: 7,
+      target: 7,
+      unlocked: true,
+      unlockedAt: "2025-03-10",
+    },
+    {
+      id: "a6",
+      title: "Monthly Master",
+      description: "Maintain a 30-day streak",
+      icon: "⭐",
+      progress: 14,
+      target: 30,
+      unlocked: false,
+    },
+  ],
+};
+
+export const MOCK_WEEKLY_PROGRESS = [
+  { day: "Mon", hours: 2.5, focus: 85 },
+  { day: "Tue", hours: 1.8, focus: 78 },
+  { day: "Wed", hours: 3.2, focus: 92 },
+  { day: "Thu", hours: 2.0, focus: 88 },
+  { day: "Fri", hours: 1.5, focus: 75 },
+  { day: "Sat", hours: 4.0, focus: 95 },
+  { day: "Sun", hours: 2.8, focus: 90 },
+];
+
+export const MOCK_LEADERBOARD = [
+  { rank: 1, name: "Alex Nguyen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=AlexN", xp: 12400, level: 24 },
+  { rank: 2, name: "Maria Santos", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maria", xp: 11200, level: 22 },
+  { rank: 3, name: "You", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=You", xp: 4850, level: 12, isCurrentUser: true },
+  { rank: 4, name: "Tom Baker", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tom", xp: 4200, level: 11 },
+  { rank: 5, name: "Priya Patel", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya", xp: 3900, level: 10 },
+];

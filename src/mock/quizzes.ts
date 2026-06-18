@@ -1,0 +1,177 @@
+import type { Quiz } from "@/types/quiz";
+
+export const MOCK_QUIZZES: Quiz[] = [
+  {
+    id: "q1",
+    title: "IELTS Vocabulary & Grammar",
+    description: "Test your knowledge of common IELTS vocabulary, collocations, and grammar patterns.",
+    difficulty: "medium",
+    category: "IELTS",
+    questionCount: 5,
+    timeLimit: 600,
+    author: "Emily Walsh",
+    plays: 1240,
+    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=250&fit=crop",
+    questions: [
+      {
+        id: "q1-1",
+        text: "Which word best completes: 'The government should take ___ action to reduce pollution.'",
+        choices: [
+          { id: "a", text: "decisive" },
+          { id: "b", text: "deciding" },
+          { id: "c", text: "decided" },
+          { id: "d", text: "decides" },
+        ],
+        correctChoiceId: "a",
+        explanation: "'Decisive action' is a common academic collocation used in IELTS Writing.",
+      },
+      {
+        id: "q1-2",
+        text: "Choose the correct form: 'If I ___ more time, I would study abroad.'",
+        choices: [
+          { id: "a", text: "have" },
+          { id: "b", text: "had" },
+          { id: "c", text: "will have" },
+          { id: "d", text: "would have" },
+        ],
+        correctChoiceId: "b",
+      },
+      {
+        id: "q1-3",
+        text: "In IELTS Writing, 'Furthermore' is used to:",
+        choices: [
+          { id: "a", text: "Introduce a contrasting idea" },
+          { id: "b", text: "Add supporting information" },
+          { id: "c", text: "Conclude an essay" },
+          { id: "d", text: "Give an example" },
+        ],
+        correctChoiceId: "b",
+      },
+      {
+        id: "q1-4",
+        text: "Which is the best paraphrase of 'Many people believe that'?",
+        choices: [
+          { id: "a", text: "It is widely argued that" },
+          { id: "b", text: "Many people believing that" },
+          { id: "c", text: "Believed by many people" },
+          { id: "d", text: "People many believe" },
+        ],
+        correctChoiceId: "a",
+      },
+      {
+        id: "q1-5",
+        text: "The phrase 'a wide range of' is typically followed by:",
+        choices: [
+          { id: "a", text: "A singular uncountable or plural noun" },
+          { id: "b", text: "Only singular nouns" },
+          { id: "c", text: "A verb in -ing form" },
+          { id: "d", text: "An adjective" },
+        ],
+        correctChoiceId: "a",
+      },
+    ],
+  },
+  {
+    id: "q2",
+    title: "TOEIC Part 5 Grammar",
+    description: "Practice incomplete-sentence grammar questions from the TOEIC Listening & Reading test.",
+    difficulty: "hard",
+    category: "TOEIC",
+    questionCount: 3,
+    timeLimit: 480,
+    author: "James Park",
+    plays: 890,
+    questions: [
+      {
+        id: "q2-1",
+        text: "The meeting has been postponed ___ next Monday.",
+        choices: [
+          { id: "a", text: "until" },
+          { id: "b", text: "during" },
+          { id: "c", text: "while" },
+          { id: "d", text: "since" },
+        ],
+        correctChoiceId: "a",
+      },
+      {
+        id: "q2-2",
+        text: "All employees are required ___ the safety guidelines.",
+        choices: [
+          { id: "a", text: "follow" },
+          { id: "b", text: "following" },
+          { id: "c", text: "to follow" },
+          { id: "d", text: "followed" },
+        ],
+        correctChoiceId: "c",
+      },
+      {
+        id: "q2-3",
+        text: "The report ___ by the finance team yesterday.",
+        choices: [
+          { id: "a", text: "submits" },
+          { id: "b", text: "was submitted" },
+          { id: "c", text: "submitting" },
+          { id: "d", text: "has submit" },
+        ],
+        correctChoiceId: "b",
+      },
+    ],
+  },
+  {
+    id: "q3",
+    title: "Business English Essentials",
+    description: "Quick quiz on professional email language and workplace communication.",
+    difficulty: "easy",
+    category: "Business English",
+    questionCount: 4,
+    timeLimit: 300,
+    author: "David Chen",
+    plays: 2100,
+    questions: [
+      {
+        id: "q3-1",
+        text: "Which opening is most appropriate for a formal business email?",
+        choices: [
+          { id: "a", text: "Hey there!" },
+          { id: "b", text: "Dear Mr. Johnson," },
+          { id: "c", text: "Yo Johnson," },
+          { id: "d", text: "What's up?" },
+        ],
+        correctChoiceId: "b",
+      },
+      {
+        id: "q3-2",
+        text: "'I am writing to ___ about the delivery delay.'",
+        choices: [
+          { id: "a", text: "inquire" },
+          { id: "b", text: "inquiring" },
+          { id: "c", text: "inquired" },
+          { id: "d", text: "inquiry" },
+        ],
+        correctChoiceId: "a",
+      },
+      {
+        id: "q3-3",
+        text: "Which phrase politely requests action?",
+        choices: [
+          { id: "a", text: "Do this now." },
+          { id: "b", text: "You must send it." },
+          { id: "c", text: "Could you please send the file?" },
+          { id: "d", text: "Send the file immediately!!!" },
+        ],
+        correctChoiceId: "c",
+      },
+      {
+        id: "q3-4",
+        text: "'ASAP' in business emails means:",
+        choices: [
+          { id: "a", text: "At some appropriate point" },
+          { id: "b", text: "As soon as possible" },
+          { id: "c", text: "After scheduled approval process" },
+          { id: "d", text: "At the start of a project" },
+        ],
+        correctChoiceId: "b",
+      },
+    ],
+  },
+];
