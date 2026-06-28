@@ -133,6 +133,30 @@ export type TranslationDictionary = {
     yourTokens: string;
     locked: string;
     enrolled: string;
+    courseProgress: string;
+    lessons: string;
+    lessonList: string;
+    startLesson: string;
+  };
+  missions: {
+    subtitle: string;
+    todayGoals: string;
+    dailyStreak: string;
+    weeklyStreak: string;
+    monthlyStreak: string;
+    weeks: string;
+    months: string;
+    submitFile: string;
+    acceptedFormats: string;
+    submitted: string;
+    submitSuccess: string;
+  };
+  social: {
+    subtitle: string;
+    createPlaceholder: string;
+    addPhoto: string;
+    post: string;
+    justNow: string;
   };
   settings: {
     title: string;

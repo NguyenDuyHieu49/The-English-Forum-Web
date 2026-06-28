@@ -7,10 +7,14 @@ import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CreatePost } from "@/components/social/create-post";
 import { MOCK_POSTS, MOCK_STORIES } from "@/mock/social";
+import { useTranslation } from "@/hooks/use-translation";
+import type { Post } from "@/types/social";
 import { cn } from "@/lib/utils";
 
 export default function SocialPage() {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState(MOCK_POSTS);
 
   const toggleLike = (postId: string) => {
@@ -29,14 +33,34 @@ export default function SocialPage() {
     );
   };
 
+  const handleCreatePost = (content: string, image?: string) => {
+    const newPost: Post = {
+      id: `p-${Date.now()}`,
+      user: {
+        id: "you",
+        name: "You",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=You",
+        role: "Student",
+      },
+      content,
+      image,
+      likes: 0,
+      shares: 0,
+      saved: false,
+      createdAt: t.social.justNow,
+      comments: [],
+    };
+    setPosts((prev) => [newPost, ...prev]);
+  };
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="text-3xl font-bold">Social Feed</h1>
-        <p className="mt-1 text-muted-foreground">
-          Connect with learners and educators
-        </p>
+        <h1 className="text-3xl font-bold">{t.nav.social}</h1>
+        <p className="mt-1 text-muted-foreground">{t.social.subtitle}</p>
       </motion.div>
+
+      <CreatePost onPost={handleCreatePost} />
 
       <div className="flex gap-4 overflow-x-auto pb-2">
         {MOCK_STORIES.map((story, i) => (
@@ -91,13 +115,18 @@ export default function SocialPage() {
               <p className="mb-3 whitespace-pre-wrap">{post.content}</p>
               {post.image && (
                 <div className="relative mb-4 h-64 overflow-hidden rounded-xl">
-                  <Image
-                    src={post.image}
-                    alt="Post image"
-                    fill
-                    className="object-cover"
-                    sizes="600px"
-                  />
+                  {post.image.startsWith("blob:") ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={post.image} alt="Post" className="h-full w-full object-cover" />
+                  ) : (
+                    <Image
+                      src={post.image}
+                      alt="Post image"
+                      fill
+                      className="object-cover"
+                      sizes="600px"
+                    />
+                  )}
                 </div>
               )}
               <div className="flex items-center gap-1 border-t border-border pt-3">

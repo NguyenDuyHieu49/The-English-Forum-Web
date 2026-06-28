@@ -102,7 +102,7 @@ export function CourseCard({ course, index = 0 }: CourseCardProps) {
 
           {isEnrolled ? (
             <Button className="w-full" size="sm" asChild>
-              <Link href="/courses">
+              <Link href={`/courses/${course.id}`}>
                 <Play className="mr-1.5 h-3.5 w-3.5" />
                 {t.home.continueLearning}
               </Link>

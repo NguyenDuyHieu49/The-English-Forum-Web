@@ -20,4 +20,6 @@ export interface Lesson {
   title: string;
   duration: number;
   completed: boolean;
+  description: string;
+  content: string;
 }

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, GraduationCap, Sparkles } from "lucide-react";
 import { APP_NAME } from "@/constants/app";
 import { NAV_ITEMS } from "@/constants/navigation";
+import { PetWidget } from "@/components/gamification/pet-widget";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
 import { cn } from "@/lib/utils";
@@ -100,6 +101,10 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      <div className="space-y-2 px-3 pb-2">
+        <PetWidget compact collapsed={sidebarCollapsed} />
+      </div>
 
       <div className="border-t border-border p-3">
         <div
