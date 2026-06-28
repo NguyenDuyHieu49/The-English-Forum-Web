@@ -20,11 +20,11 @@ import { MOCK_COURSES } from "@/mock/courses";
 import { MOCK_DAILY_MISSIONS } from "@/mock/missions";
 import { MOCK_LEADERBOARD, MOCK_WEEKLY_PROGRESS, MOCK_USER_STATS } from "@/mock/user";
 import { useAppStore } from "@/store/app-store";
-import { generateRandomReward } from "@/services/gamification";
 import { useTranslation } from "@/hooks/use-translation";
 
 export default function HomePage() {
-  const addReward = useAppStore((s) => s.addReward);
+  const claimDailyCheckIn = useAppStore((s) => s.claimDailyCheckIn);
+  const canCheckInToday = useAppStore((s) => s.canCheckInToday);
   const focusMode = useAppStore((s) => s.focusMode);
   const { t } = useTranslation();
 
@@ -36,7 +36,7 @@ export default function HomePage() {
   ];
 
   const handleClaimReward = () => {
-    addReward(generateRandomReward());
+    claimDailyCheckIn();
   };
 
   if (focusMode) {
@@ -71,9 +71,9 @@ export default function HomePage() {
             !
           </p>
         </div>
-        <Button onClick={handleClaimReward} variant="outline">
+        <Button onClick={handleClaimReward} variant="outline" disabled={!canCheckInToday()}>
           <Sparkles className="mr-2 h-4 w-4" />
-          {t.home.claimReward}
+          {canCheckInToday() ? t.home.claimReward : t.home.checkedInToday}
         </Button>
       </motion.div>
 

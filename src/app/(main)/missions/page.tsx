@@ -13,6 +13,7 @@ import type { DailyMission } from "@/types/mission";
 export default function MissionsPage() {
   const streak = useAppStore((s) => s.userStats.streak);
   const addReward = useAppStore((s) => s.addReward);
+  const addInventoryItem = useAppStore((s) => s.addInventoryItem);
   const { t } = useTranslation();
   const [missions, setMissions] = useState<DailyMission[]>(MOCK_DAILY_MISSIONS);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -48,6 +49,7 @@ export default function MissionsPage() {
       label: `${mission.xpReward} XP`,
       rarity: "common",
     });
+    addInventoryItem("lucky_box", "mission");
 
     setFeedback(t.missions.submitSuccess);
     setTimeout(() => setFeedback(null), 3000);

@@ -5,8 +5,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { FocusResult } from "@/types/focus";
 import type { PetMood, Reward, UserStats } from "@/types/gamification";
+import type { InventoryItem, InventoryItemType, InventorySource, OpenLootResult } from "@/types/inventory";
 import { MOCK_USER_STATS } from "@/mock/user";
 import { DEFAULT_ENROLLED_COURSE_IDS, PET_FOOD_ITEMS } from "@/constants/gamification";
+import {
+  createInventoryItem,
+  openInventoryItem,
+  todayKey,
+} from "@/services/inventory";
 
 function moodFromEnergy(energy: number): PetMood {
   if (energy >= 90) return "ecstatic";
@@ -25,6 +31,8 @@ interface AppState {
   showReward: Reward | null;
   userStats: UserStats;
   enrolledCourseIds: string[];
+  inventory: InventoryItem[];
+  lastCheckInDate: string | null;
   socialScrollStart: number | null;
   locale: Locale;
   focusAutoSnoozeUntil: number | null;
@@ -38,6 +46,10 @@ interface AppState {
   setShowDistractionModal: (show: boolean) => void;
   setShowReward: (reward: Reward | null) => void;
   addReward: (reward: Reward) => void;
+  addInventoryItem: (type: InventoryItemType, source: InventorySource) => void;
+  claimDailyCheckIn: () => "success" | "already_claimed";
+  openInventoryItemById: (itemId: string) => OpenLootResult | null;
+  canCheckInToday: () => boolean;
   buyPetFood: (foodId: string) => "success" | "insufficient_tokens" | "not_found";
   purchaseCourse: (courseId: string, price: number) => "success" | "insufficient_tokens" | "already_owned";
   isCourseEnrolled: (courseId: string) => boolean;
@@ -56,6 +68,8 @@ export const useAppStore = create<AppState>()(
       showReward: null,
       userStats: MOCK_USER_STATS,
       enrolledCourseIds: DEFAULT_ENROLLED_COURSE_IDS,
+      inventory: [],
+      lastCheckInDate: null,
       socialScrollStart: null,
       locale: DEFAULT_LOCALE,
       focusAutoSnoozeUntil: null,
@@ -106,11 +120,67 @@ export const useAppStore = create<AppState>()(
       setShowReward: (reward) => set({ showReward: reward }),
 
       addReward: (reward) => {
+        if (reward.type === "lucky_box") {
+          get().addInventoryItem("lucky_box", "reward");
+          set({ showReward: reward });
+          return;
+        }
+
         const stats = { ...get().userStats };
         if (reward.type === "tokens") stats.tokens += reward.amount;
         if (reward.type === "xp") stats.xp += reward.amount;
         set({ userStats: stats, showReward: reward });
       },
+
+      addInventoryItem: (type, source) => {
+        set((s) => ({
+          inventory: [...s.inventory, createInventoryItem(type, source)],
+        }));
+      },
+
+      claimDailyCheckIn: () => {
+        const today = todayKey();
+        if (get().lastCheckInDate === today) return "already_claimed";
+
+        const item = createInventoryItem("chest", "daily_checkin");
+        set((s) => ({
+          lastCheckInDate: today,
+          inventory: [...s.inventory, item],
+          showReward: {
+            id: item.id,
+            type: "tokens",
+            amount: 0,
+            label: "📦 Daily Chest",
+            rarity: "rare",
+          },
+        }));
+        return "success";
+      },
+
+      openInventoryItemById: (itemId) => {
+        const item = get().inventory.find((i) => i.id === itemId);
+        if (!item) return null;
+
+        const loot = openInventoryItem(item.type);
+        const stats = { ...get().userStats };
+        stats.tokens += loot.tokens;
+        stats.xp += loot.xp;
+
+        set({
+          inventory: get().inventory.filter((i) => i.id !== itemId),
+          userStats: stats,
+          showReward: {
+            id: `loot-${itemId}`,
+            type: "tokens",
+            amount: loot.tokens,
+            label: loot.label,
+            rarity: loot.rarity,
+          },
+        });
+        return loot;
+      },
+
+      canCheckInToday: () => get().lastCheckInDate !== todayKey(),
 
       buyPetFood: (foodId) => {
         const item = PET_FOOD_ITEMS.find((f) => f.id === foodId);
@@ -168,6 +238,8 @@ export const useAppStore = create<AppState>()(
         theme: state.theme,
         userStats: state.userStats,
         enrolledCourseIds: state.enrolledCourseIds,
+        inventory: state.inventory,
+        lastCheckInDate: state.lastCheckInDate,
         locale: state.locale,
         focusAutoSnoozeUntil: state.focusAutoSnoozeUntil,
       }),

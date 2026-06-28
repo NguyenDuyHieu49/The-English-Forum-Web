@@ -19,6 +19,7 @@ export type TranslationDictionary = {
     social: string;
     messages: string;
     missions: string;
+    inventory: string;
     courses: string;
     achievements: string;
     classroom: string;
@@ -62,6 +63,7 @@ export type TranslationDictionary = {
     subtitle: string;
     streak: string;
     claimReward: string;
+    checkedInToday: string;
     continueLearning: string;
     weeklyProgress: string;
     dailyMissions: string;
@@ -154,6 +156,27 @@ export type TranslationDictionary = {
     coursesInProgress: string;
     noInProgress: string;
     continueCourse: string;
+  };
+  inventory: {
+    title: string;
+    subtitle: string;
+    totalItems: string;
+    chests: string;
+    luckyBoxes: string;
+    noChests: string;
+    noLuckyBoxes: string;
+    openChest: string;
+    openLuckyBox: string;
+    fromCheckIn: string;
+    fromMission: string;
+    fromReward: string;
+    howToGet: string;
+    checkInHint: string;
+    missionHint: string;
+    items: {
+      chest: string;
+      luckyBox: string;
+    };
   };
   missions: {
     subtitle: string;
