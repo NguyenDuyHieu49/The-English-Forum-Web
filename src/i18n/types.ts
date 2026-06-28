@@ -20,6 +20,7 @@ export type TranslationDictionary = {
     messages: string;
     missions: string;
     courses: string;
+    achievements: string;
     classroom: string;
     quiz: string;
     createQuiz: string;
@@ -137,6 +138,22 @@ export type TranslationDictionary = {
     lessons: string;
     lessonList: string;
     startLesson: string;
+  };
+  achievements: {
+    title: string;
+    subtitle: string;
+    certificatesEarned: string;
+    coursesCompleted: string;
+    inProgress: string;
+    myCertificates: string;
+    noCertificates: string;
+    score: string;
+    downloadCertificate: string;
+    completedCourses: string;
+    noCompletedCourses: string;
+    coursesInProgress: string;
+    noInProgress: string;
+    continueCourse: string;
   };
   missions: {
     subtitle: string;

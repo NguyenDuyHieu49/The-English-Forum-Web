@@ -20,7 +20,7 @@ export const MOCK_USER_STATS: UserStats = {
     experience: 720,
     mood: "happy",
     energy: 65,
-    evolutionStage: 2,
+    evolutionStage: 1,
   },
   achievements: [
     {

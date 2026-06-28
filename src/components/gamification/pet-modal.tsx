@@ -6,6 +6,7 @@ import { Sparkles } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
 import { PET_FOOD_ITEMS } from "@/constants/gamification";
+import { getPetDisplayEmoji } from "@/constants/pet";
 import {
   Dialog,
   DialogContent,
@@ -15,10 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-
-const PET_EMOJI: Record<string, string[]> = {
-  cat: ["🐱", "🐈", "🦁"],
-};
 
 const MOOD_EMOJI: Record<string, string> = {
   ecstatic: "😄",
@@ -40,8 +37,7 @@ export function PetModal({ open, onOpenChange }: PetModalProps) {
   const { t } = useTranslation();
   const [message, setMessage] = useState<string | null>(null);
 
-  const emojis = PET_EMOJI[pet.type] ?? PET_EMOJI.cat;
-  const emoji = emojis[pet.evolutionStage - 1] ?? emojis[0];
+  const emoji = getPetDisplayEmoji(pet.type);
 
   const handleBuyFood = (foodId: string) => {
     const result = buyPetFood(foodId);

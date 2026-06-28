@@ -130,7 +130,6 @@ export const useAppStore = create<AppState>()(
         }
         pet.experience = experience;
         pet.level = level;
-        pet.evolutionStage = level >= 15 ? 3 : level >= 5 ? 2 : 1;
         pet.mood = moodFromEnergy(pet.energy);
 
         set({

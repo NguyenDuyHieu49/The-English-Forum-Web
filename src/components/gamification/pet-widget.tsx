@@ -5,12 +5,9 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { getPetDisplayEmoji } from "@/constants/pet";
 import { PetModal } from "@/components/gamification/pet-modal";
 import { cn } from "@/lib/utils";
-
-const PET_EMOJI: Record<string, string[]> = {
-  cat: ["🐱", "🐈", "🦁"],
-};
 
 const MOOD_EMOJI: Record<string, string> = {
   ecstatic: "😄",
@@ -29,8 +26,7 @@ export function PetWidget({ compact = false, collapsed = false }: PetWidgetProps
   const [open, setOpen] = useState(false);
   const pet = useAppStore((s) => s.userStats.pet);
   const { t } = useTranslation();
-  const emojis = PET_EMOJI[pet.type] ?? PET_EMOJI.cat;
-  const emoji = emojis[pet.evolutionStage - 1] ?? emojis[0];
+  const emoji = getPetDisplayEmoji(pet.type);
 
   return (
     <>

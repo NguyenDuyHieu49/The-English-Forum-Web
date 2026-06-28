@@ -1,4 +1,5 @@
 import {
+  Award,
   BookOpen,
   Bot,
   GraduationCap,
@@ -22,6 +23,7 @@ export const NAV_ITEMS: NavItem[] = [
   { labelKey: "messages", href: "/messages", icon: MessageSquare },
   { labelKey: "missions", href: "/missions", icon: Target },
   { labelKey: "courses", href: "/courses", icon: BookOpen },
+  { labelKey: "achievements", href: "/achievements", icon: Award },
   { labelKey: "classroom", href: "/classroom", icon: Video },
   { labelKey: "quiz", href: "/quiz", icon: GraduationCap },
   { labelKey: "createQuiz", href: "/quiz/create", icon: PenLine },
