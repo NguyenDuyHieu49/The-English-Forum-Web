@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MOCK_COURSES } from "@/mock/courses";
 import { MOCK_DAILY_MISSIONS } from "@/mock/missions";
-import { MOCK_LEADERBOARD, MOCK_WEEKLY_PROGRESS, MOCK_USER_STATS } from "@/mock/user";
+import { MOCK_LEADERBOARD, MOCK_WEEKLY_PROGRESS } from "@/mock/user";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -26,13 +26,14 @@ export default function HomePage() {
   const claimDailyCheckIn = useAppStore((s) => s.claimDailyCheckIn);
   const canCheckInToday = useAppStore((s) => s.canCheckInToday);
   const focusMode = useAppStore((s) => s.focusMode);
+  const userStats = useAppStore((s) => s.userStats);
   const { t } = useTranslation();
 
   const statCards = [
-    { label: t.home.learningHours, value: `${MOCK_USER_STATS.learningHours}h`, icon: Clock, color: "text-blue-500" },
-    { label: t.home.focusScore, value: `${MOCK_USER_STATS.focusScore}%`, icon: Focus, color: "text-emerald-500" },
-    { label: t.home.totalXp, value: MOCK_USER_STATS.xp.toLocaleString(), icon: Zap, color: "text-violet-500" },
-    { label: t.common.tokens, value: MOCK_USER_STATS.tokens.toString(), icon: Sparkles, color: "text-amber-500" },
+    { label: t.home.learningHours, value: `${userStats.learningHours}h`, icon: Clock, color: "text-blue-500" },
+    { label: t.home.focusScore, value: `${userStats.focusScore}%`, icon: Focus, color: "text-emerald-500" },
+    { label: t.home.totalXp, value: userStats.xp.toLocaleString(), icon: Zap, color: "text-violet-500" },
+    { label: t.common.tokens, value: userStats.tokens.toString(), icon: Sparkles, color: "text-amber-500" },
   ];
 
   const handleClaimReward = () => {
@@ -66,7 +67,7 @@ export default function HomePage() {
           <p className="mt-1 text-muted-foreground">
             {t.home.subtitle}{" "}
             <span className="font-semibold text-orange-500">
-              {MOCK_USER_STATS.streak.daily} {t.home.streak}
+              {userStats.streak.daily} {t.home.streak}
             </span>
             !
           </p>
