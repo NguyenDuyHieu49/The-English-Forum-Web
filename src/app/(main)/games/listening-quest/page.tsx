@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Volume2 } from "lucide-react";
 import { GAME_META } from "@/constants/arena";
 import { LISTENING_QUESTIONS, shuffle } from "@/mock/arena-games";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import type { GameSessionResult } from "@/types/arena";
 
 export default function ListeningQuestPage() {
+  const router = useRouter();
   const meta = GAME_META["listening-quest"];
   const completeGame = useArenaStore((s) => s.completeGame);
   const questions = useMemo(() => shuffle(LISTENING_QUESTIONS).slice(0, 5), []);
@@ -118,7 +120,10 @@ export default function ListeningQuestPage() {
         open={finished}
         reward={reward}
         won={(reward?.coins ?? 0) > 0}
-        onClose={() => setShowConfetti(false)}
+        onClose={() => {
+          setShowConfetti(false);
+          router.push("/games");
+        }}
       />
     </>
   );

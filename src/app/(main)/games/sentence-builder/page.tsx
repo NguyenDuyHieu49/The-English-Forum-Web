@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GAME_META } from "@/constants/arena";
 import { SENTENCE_PUZZLES, shuffle } from "@/mock/arena-games";
 import { GameShell } from "@/components/arena/game-shell";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
 import type { GameSessionResult } from "@/types/arena";
 
 export default function SentenceBuilderPage() {
+  const router = useRouter();
   const meta = GAME_META["sentence-builder"];
   const completeGame = useArenaStore((s) => s.completeGame);
   const puzzles = useMemo(() => shuffle(SENTENCE_PUZZLES).slice(0, 5), []);
@@ -120,7 +122,10 @@ export default function SentenceBuilderPage() {
         open={finished}
         reward={reward}
         won={(reward?.coins ?? 0) > 0}
-        onClose={() => setShowConfetti(false)}
+        onClose={() => {
+          setShowConfetti(false);
+          router.push("/games");
+        }}
       />
     </>
   );

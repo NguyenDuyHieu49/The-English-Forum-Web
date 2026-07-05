@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GAME_META } from "@/constants/arena";
 import { WORD_HUNTER_PAIRS, shuffle } from "@/mock/arena-games";
 import { GameShell } from "@/components/arena/game-shell";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
 import type { GameSessionResult } from "@/types/arena";
 
 export default function WordHunterPage() {
+  const router = useRouter();
   const meta = GAME_META["word-hunter"];
   const completeGame = useArenaStore((s) => s.completeGame);
   const pairs = useMemo(() => shuffle(WORD_HUNTER_PAIRS).slice(0, 8), []);
@@ -125,7 +127,10 @@ export default function WordHunterPage() {
         open={finished}
         reward={reward}
         won={correct >= pairs.length * 0.6}
-        onClose={() => setShowConfetti(false)}
+        onClose={() => {
+          setShowConfetti(false);
+          router.push("/games");
+        }}
       />
     </>
   );

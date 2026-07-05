@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GAME_META } from "@/constants/arena";
 import { BOSS_QUESTIONS } from "@/mock/arena-games";
 import { GameShell } from "@/components/arena/game-shell";
@@ -11,6 +12,7 @@ import { useArenaStore } from "@/store/arena-store";
 import type { GameSessionResult } from "@/types/arena";
 
 export default function BossBattlePage() {
+  const router = useRouter();
   const meta = GAME_META["boss-battle"];
   const bossBattle = useArenaStore((s) => s.bossBattle);
   const startBossBattle = useArenaStore((s) => s.startBossBattle);
@@ -82,8 +84,8 @@ export default function BossBattlePage() {
         won={victory}
         onClose={() => {
           setShowConfetti(false);
-          startBossBattle();
           setFinished(false);
+          router.push("/games");
         }}
       />
     </>

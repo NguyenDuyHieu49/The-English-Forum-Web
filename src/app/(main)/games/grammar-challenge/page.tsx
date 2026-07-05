@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GAME_META } from "@/constants/arena";
 import { GRAMMAR_QUESTIONS, shuffle } from "@/mock/arena-games";
 import { GameShell } from "@/components/arena/game-shell";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
 import type { GameSessionResult } from "@/types/arena";
 
 export default function GrammarChallengePage() {
+  const router = useRouter();
   const meta = GAME_META["grammar-challenge"];
   const completeGame = useArenaStore((s) => s.completeGame);
   const questions = useMemo(
@@ -101,7 +103,10 @@ export default function GrammarChallengePage() {
         open={finished}
         reward={reward}
         won={(reward?.coins ?? 0) > 0}
-        onClose={() => setShowConfetti(false)}
+        onClose={() => {
+          setShowConfetti(false);
+          router.push("/games");
+        }}
       />
     </>
   );
