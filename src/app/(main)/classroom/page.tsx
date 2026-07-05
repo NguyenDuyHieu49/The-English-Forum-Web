@@ -19,16 +19,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { FocusCamera } from "@/components/focus/focus-camera";
 import { MouseBehaviorWarning } from "@/components/focus/mouse-behavior-warning";
-import { MOCK_CLASSROOM } from "@/mock/classroom";
 import { useAppStore } from "@/store/app-store";
+import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 import { cn } from "@/lib/utils";
 
 export default function ClassroomPage() {
+  const { t } = useTranslation();
+  const { classroom } = useLocalizedContent();
   const [micOn, setMicOn] = useState(false);
   const [cameraOn, setCameraOn] = useState(true);
   const [handRaised, setHandRaised] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const focusMode = useAppStore((s) => s.focusMode);
+
+  const roleLabel = (role: string) =>
+    role === "teacher" ? t.classroom.roles.teacher : t.classroom.roles.student;
 
   return (
     <div className="space-y-4">
@@ -36,9 +42,9 @@ export default function ClassroomPage() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{MOCK_CLASSROOM.title}</h1>
+          <h1 className="text-2xl font-bold">{classroom.title}</h1>
           <p className="text-sm text-muted-foreground">
-            {MOCK_CLASSROOM.teacher} · {MOCK_CLASSROOM.members.length} members
+            {classroom.teacher} · {classroom.members.length} {t.common.members}
           </p>
         </div>
       </div>
@@ -49,8 +55,8 @@ export default function ClassroomPage() {
             <div className="relative flex aspect-video items-center justify-center bg-zinc-900">
               <div className="text-center text-white/60">
                 <MonitorUp className="mx-auto mb-2 h-12 w-12" />
-                <p className="text-sm">Teacher Screen Share</p>
-                <p className="text-xs">IELTS Speaking Part 2 — Slide 8/18</p>
+                <p className="text-sm">{t.classroom.teacherScreenShare}</p>
+                <p className="text-xs">{t.classroom.slideLabel}</p>
               </div>
               {!focusMode && (
                 <div className="absolute bottom-4 right-4">
@@ -91,7 +97,7 @@ export default function ClassroomPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {MOCK_CLASSROOM.members.map((member, i) => (
+            {classroom.members.map((member, i) => (
               <motion.div
                 key={member.id}
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -133,12 +139,12 @@ export default function ClassroomPage() {
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
                 <MessageSquare className="h-4 w-4" />
-                Chat
+                {t.classroom.chat}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="max-h-48 space-y-2 overflow-y-auto">
-                {MOCK_CLASSROOM.chat.map((msg) => (
+                {classroom.chat.map((msg) => (
                   <div key={msg.id} className="text-xs">
                     <span className="font-semibold">{msg.sender}: </span>
                     <span className="text-muted-foreground">{msg.text}</span>
@@ -147,7 +153,7 @@ export default function ClassroomPage() {
               </div>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Message..."
+                  placeholder={t.classroom.messagePlaceholder}
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
                   className="h-8 text-xs"
@@ -160,11 +166,11 @@ export default function ClassroomPage() {
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
                 <Users className="h-4 w-4" />
-                Members ({MOCK_CLASSROOM.members.length})
+                {t.classroom.members} ({classroom.members.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {MOCK_CLASSROOM.members.map((m) => (
+              {classroom.members.map((m) => (
                 <div key={m.id} className="flex items-center gap-2">
                   <Avatar className="h-7 w-7">
                     <AvatarImage src={m.avatar} alt={m.name} />
@@ -173,13 +179,11 @@ export default function ClassroomPage() {
                   <span className="flex-1 truncate text-xs">{m.name}</span>
                   <span
                     className={cn(
-                      "text-[10px] capitalize",
-                      m.role === "teacher"
-                        ? "text-violet-500"
-                        : "text-muted-foreground"
+                      "text-[10px]",
+                      m.role === "teacher" ? "text-violet-500" : "text-muted-foreground"
                     )}
                   >
-                    {m.role}
+                    {roleLabel(m.role)}
                   </span>
                 </div>
               ))}
@@ -190,11 +194,11 @@ export default function ClassroomPage() {
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
                 <FileText className="h-4 w-4" />
-                Files
+                {t.classroom.files}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {MOCK_CLASSROOM.files.map((file) => (
+              {classroom.files.map((file) => (
                 <div
                   key={file.id}
                   className="flex items-center gap-2 rounded-lg bg-muted/50 p-2"

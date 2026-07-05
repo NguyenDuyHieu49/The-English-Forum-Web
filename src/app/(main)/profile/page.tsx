@@ -8,10 +8,21 @@ import { Progress } from "@/components/ui/progress";
 import { PetWidget } from "@/components/gamification/pet-widget";
 import { useAppStore } from "@/store/app-store";
 import { xpToNextLevel } from "@/services/gamification";
+import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const stats = useAppStore((s) => s.userStats);
+  const { achievements, learningHistory } = useLocalizedContent();
   const xpRemaining = xpToNextLevel(stats.xp);
+
+  const displayAchievements = achievements.map((a) => {
+    const stored = stats.achievements.find((s) => s.id === a.id);
+    return stored
+      ? { ...a, progress: stored.progress, unlocked: stored.unlocked, unlockedAt: stored.unlockedAt }
+      : a;
+  });
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -21,25 +32,29 @@ export default function ProfilePage() {
         className="flex items-center gap-6"
       >
         <Avatar className="h-24 w-24 ring-4 ring-violet-500/20">
-          <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=You" alt="You" />
-          <AvatarFallback>You</AvatarFallback>
+          <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=You" alt={t.common.you} />
+          <AvatarFallback>{t.common.you[0]}</AvatarFallback>
         </Avatar>
         <div>
-          <h1 className="text-3xl font-bold">Your Profile</h1>
-          <p className="text-muted-foreground">Level {stats.level} Learner</p>
+          <h1 className="text-3xl font-bold">{t.profile.title}</h1>
+          <p className="text-muted-foreground">
+            {t.gamification.level} {stats.level} {t.profile.learnerLevel}
+          </p>
           <div className="mt-2 flex items-center gap-1.5 text-sm">
             <Flame className="h-4 w-4 text-orange-500" />
-            <span>{stats.streak.daily} day streak</span>
+            <span>
+              {stats.streak.daily} {t.gamification.dayStreak}
+            </span>
           </div>
         </div>
       </motion.div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Learning Hours", value: `${stats.learningHours}h`, icon: Clock },
-          { label: "Total XP", value: stats.xp.toLocaleString(), icon: Zap },
-          { label: "Tokens", value: stats.tokens.toString(), icon: Sparkles },
-          { label: "Focus Score", value: `${stats.focusScore}%`, icon: Trophy },
+          { label: t.profile.learningHours, value: `${stats.learningHours}h`, icon: Clock },
+          { label: t.profile.totalXp, value: stats.xp.toLocaleString(), icon: Zap },
+          { label: t.common.tokens, value: stats.tokens.toString(), icon: Sparkles },
+          { label: t.profile.focusScore, value: `${stats.focusScore}%`, icon: Trophy },
         ].map((s, i) => (
           <motion.div
             key={s.label}
@@ -63,8 +78,12 @@ export default function ProfilePage() {
       <Card>
         <CardContent className="p-5">
           <div className="mb-2 flex justify-between text-sm">
-            <span>Level {stats.level}</span>
-            <span className="text-muted-foreground">{xpRemaining} XP to next level</span>
+            <span>
+              {t.gamification.level} {stats.level}
+            </span>
+            <span className="text-muted-foreground">
+              {xpRemaining} {t.profile.xpToNext}
+            </span>
           </div>
           <Progress value={((stats.xp % 1000) / 1000) * 100} />
         </CardContent>
@@ -75,10 +94,10 @@ export default function ProfilePage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Achievements</CardTitle>
+            <CardTitle className="text-base">{t.profile.achievements}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {stats.achievements.map((a) => (
+            {displayAchievements.map((a) => (
               <div
                 key={a.id}
                 className={`flex items-center gap-3 rounded-xl p-3 ${
@@ -90,14 +109,11 @@ export default function ProfilePage() {
                   <p className="text-sm font-medium">{a.title}</p>
                   <p className="text-xs text-muted-foreground">{a.description}</p>
                   {!a.unlocked && (
-                    <Progress
-                      value={(a.progress / a.target) * 100}
-                      className="mt-2 h-1"
-                    />
+                    <Progress value={(a.progress / a.target) * 100} className="mt-2 h-1" />
                   )}
                 </div>
                 {a.unlocked && (
-                  <span className="text-xs font-medium text-emerald-500">Unlocked</span>
+                  <span className="text-xs font-medium text-emerald-500">{t.common.unlocked}</span>
                 )}
               </div>
             ))}
@@ -107,16 +123,11 @@ export default function ProfilePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Learning History</CardTitle>
+          <CardTitle className="text-base">{t.profile.learningHistory}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {[
-              { course: "IELTS Academic Preparation", date: "Today", duration: "45 min" },
-              { course: "TOEIC Listening & Reading", date: "Yesterday", duration: "1h 20m" },
-              { course: "Business English Communication", date: "2 days ago", duration: "30 min" },
-              { course: "English Grammar B1–B2", date: "3 days ago", duration: "55 min" },
-            ].map((h, i) => (
+            {learningHistory.map((h, i) => (
               <div
                 key={i}
                 className="flex items-center justify-between rounded-xl bg-muted/30 p-3"

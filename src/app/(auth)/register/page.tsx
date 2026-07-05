@@ -20,7 +20,7 @@ import {
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -45,7 +45,7 @@ export default function RegisterPage() {
       await registerWithEmail(email, password);
       router.replace("/");
     } catch (err) {
-      setError(getFirebaseAuthErrorMessage(err));
+      setError(getFirebaseAuthErrorMessage(err, locale));
     } finally {
       setLoading(false);
     }

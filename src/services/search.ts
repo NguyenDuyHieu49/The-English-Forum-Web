@@ -1,40 +1,47 @@
+import type { Locale } from "@/constants/app";
 import type { SearchResult } from "@/types/mission";
-import { MOCK_SEARCH_RESULTS } from "@/mock/search";
-import { MOCK_COURSES } from "@/mock/courses";
-import { MOCK_QUIZZES } from "@/mock/quizzes";
+import { getLocalizedCourses, getLocalizedQuizzes, getLocalizedSearchDefaults, localizeDifficulty } from "@/i18n/content";
+import { getDictionary } from "@/i18n";
 
-export function searchAll(query: string): SearchResult[] {
-  if (!query.trim()) return MOCK_SEARCH_RESULTS;
+export function searchAll(query: string, locale: Locale = "en"): SearchResult[] {
+  const t = getDictionary(locale);
+  if (!query.trim()) return getLocalizedSearchDefaults(locale);
 
   const lowerQuery = query.toLowerCase();
+  const courses = getLocalizedCourses(locale);
+  const quizzes = getLocalizedQuizzes(locale);
 
-  const courseResults: SearchResult[] = MOCK_COURSES.filter(
-    (c) =>
-      c.title.toLowerCase().includes(lowerQuery) ||
-      c.teacher.toLowerCase().includes(lowerQuery) ||
-      c.category.toLowerCase().includes(lowerQuery)
-  ).map((c) => ({
-    id: c.id,
-    type: "course" as const,
-    title: c.title,
-    subtitle: `${c.teacher} · ${c.category}`,
-    image: c.image,
-    href: "/courses",
-  }));
+  const courseResults: SearchResult[] = courses
+    .filter(
+      (c) =>
+        c.title.toLowerCase().includes(lowerQuery) ||
+        c.teacher.toLowerCase().includes(lowerQuery) ||
+        c.category.toLowerCase().includes(lowerQuery)
+    )
+    .map((c) => ({
+      id: c.id,
+      type: "course" as const,
+      title: c.title,
+      subtitle: `${c.teacher} · ${c.category}`,
+      image: c.image,
+      href: "/courses",
+    }));
 
-  const quizResults: SearchResult[] = MOCK_QUIZZES.filter(
-    (q) =>
-      q.title.toLowerCase().includes(lowerQuery) ||
-      q.category.toLowerCase().includes(lowerQuery)
-  ).map((q) => ({
-    id: q.id,
-    type: "quiz" as const,
-    title: q.title,
-    subtitle: `${q.difficulty} · ${q.questionCount} questions`,
-    href: `/quiz/${q.id}`,
-  }));
+  const quizResults: SearchResult[] = quizzes
+    .filter(
+      (q) =>
+        q.title.toLowerCase().includes(lowerQuery) ||
+        q.category.toLowerCase().includes(lowerQuery)
+    )
+    .map((q) => ({
+      id: q.id,
+      type: "quiz" as const,
+      title: q.title,
+      subtitle: `${localizeDifficulty(locale, q.difficulty)} · ${q.questionCount} ${t.common.questions}`,
+      href: `/quiz/${q.id}`,
+    }));
 
-  const defaultResults = MOCK_SEARCH_RESULTS.filter(
+  const defaultResults = getLocalizedSearchDefaults(locale).filter(
     (r) =>
       r.title.toLowerCase().includes(lowerQuery) ||
       r.subtitle.toLowerCase().includes(lowerQuery)

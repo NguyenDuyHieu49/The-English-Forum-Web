@@ -176,9 +176,7 @@ export default function SettingsPage() {
       <Card>
         <CardContent className={cn("p-4 text-center text-sm text-muted-foreground")}>
           <Mic className="mx-auto mb-2 h-5 w-5" />
-          {locale === "vi"
-            ? "Ngôn ngữ hiện tại: Tiếng Việt"
-            : "Current language: English"}
+          {t.settings.currentLanguage}
         </CardContent>
       </Card>
     </div>

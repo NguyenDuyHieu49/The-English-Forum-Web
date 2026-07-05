@@ -8,6 +8,7 @@ import type { PetMood, Reward, UserStats } from "@/types/gamification";
 import type { InventoryItem, InventoryItemType, InventorySource, OpenLootResult } from "@/types/inventory";
 import { MOCK_USER_STATS } from "@/mock/user";
 import { DEFAULT_ENROLLED_COURSE_IDS, PET_FOOD_ITEMS } from "@/constants/gamification";
+import { getDictionary } from "@/i18n";
 import {
   createInventoryItem,
   openInventoryItem,
@@ -150,7 +151,7 @@ export const useAppStore = create<AppState>()(
             id: item.id,
             type: "tokens",
             amount: 0,
-            label: "📦 Daily Chest",
+            label: getDictionary(get().locale).gamification.dailyChest,
             rarity: "rare",
           },
         }));
@@ -161,7 +162,7 @@ export const useAppStore = create<AppState>()(
         const item = get().inventory.find((i) => i.id === itemId);
         if (!item) return null;
 
-        const loot = openInventoryItem(item.type);
+        const loot = openInventoryItem(item.type, get().locale);
         const stats = { ...get().userStats };
         stats.tokens += loot.tokens;
         stats.xp += loot.xp;

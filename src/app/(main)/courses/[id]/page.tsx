@@ -15,10 +15,10 @@ import {
   Play,
   Sparkles,
 } from "lucide-react";
-import { MOCK_COURSES } from "@/mock/courses";
-import { getLessonsByCourse } from "@/mock/lessons";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
+import { getLocalizedLessonsByCourse } from "@/i18n/content";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,8 +31,9 @@ interface CourseDetailPageProps {
 
 export default function CourseDetailPage({ params }: CourseDetailPageProps) {
   const { id } = use(params);
-  const course = MOCK_COURSES.find((c) => c.id === id);
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const { courses } = useLocalizedContent();
+  const course = courses.find((c) => c.id === id);
   const tokens = useAppStore((s) => s.userStats.tokens);
   const isEnrolled = useAppStore((s) => s.isCourseEnrolled(id));
   const purchaseCourse = useAppStore((s) => s.purchaseCourse);
@@ -41,7 +42,7 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
 
   if (!course) notFound();
 
-  const lessons = getLessonsByCourse(course.id);
+  const lessons = getLocalizedLessonsByCourse(locale, course.id);
   const selectedLesson =
     lessons.find((l) => l.id === selectedLessonId) ?? lessons.find((l) => !l.completed) ?? lessons[0];
 
@@ -147,7 +148,7 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
                       <p className="text-sm font-medium leading-snug">{lesson.title}</p>
                       <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
-                        {lesson.duration} min
+                        {lesson.duration} {t.common.min}
                       </p>
                     </div>
                     <Play className="h-4 w-4 shrink-0 text-muted-foreground" />

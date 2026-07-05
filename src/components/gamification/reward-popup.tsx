@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
+import { useTranslation } from "@/hooks/use-translation";
 import { cn } from "@/lib/utils";
 
 const RARITY_STYLES = {
@@ -14,6 +15,7 @@ const RARITY_STYLES = {
 
 export function RewardPopup() {
   const { showReward, setShowReward } = useAppStore();
+  const { t } = useTranslation();
 
   return (
     <AnimatePresence>
@@ -28,7 +30,7 @@ export function RewardPopup() {
             <button
               onClick={() => setShowReward(null)}
               className="absolute right-3 top-3 rounded-lg p-1 text-muted-foreground hover:text-foreground"
-              aria-label="Close reward"
+              aria-label={t.common.close}
             >
               <X className="h-4 w-4" />
             </button>
@@ -44,7 +46,7 @@ export function RewardPopup() {
               </div>
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {showReward.rarity} reward
+                  {showReward.rarity} {t.gamification.rarityReward}
                 </p>
                 <p className="text-lg font-bold">{showReward.label}</p>
               </div>

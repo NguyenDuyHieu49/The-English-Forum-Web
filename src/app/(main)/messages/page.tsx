@@ -7,22 +7,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { MOCK_CONVERSATIONS } from "@/mock/messages";
+import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 import { cn } from "@/lib/utils";
 
 export default function MessagesPage() {
-  const [selectedId, setSelectedId] = useState(MOCK_CONVERSATIONS[0].id);
+  const { t } = useTranslation();
+  const { conversations } = useLocalizedContent();
+  const [selectedId, setSelectedId] = useState(conversations[0]?.id ?? "");
   const [message, setMessage] = useState("");
-  const conversation = MOCK_CONVERSATIONS.find((c) => c.id === selectedId)!;
+  const conversation = conversations.find((c) => c.id === selectedId) ?? conversations[0];
+
+  if (!conversation) return null;
 
   return (
     <div className="flex h-[calc(100vh-8rem)] overflow-hidden rounded-2xl border border-border">
       <div className="w-80 shrink-0 border-r border-border bg-card/50">
         <div className="border-b border-border p-4">
-          <h2 className="font-semibold">Messages</h2>
+          <h2 className="font-semibold">{t.messages.title}</h2>
         </div>
         <div className="overflow-y-auto">
-          {MOCK_CONVERSATIONS.map((conv) => (
+          {conversations.map((conv) => (
             <button
               key={conv.id}
               onClick={() => setSelectedId(conv.id)}
@@ -47,9 +52,7 @@ export default function MessagesPage() {
                     {conv.lastMessageTime}
                   </span>
                 </div>
-                <p className="truncate text-xs text-muted-foreground">
-                  {conv.lastMessage}
-                </p>
+                <p className="truncate text-xs text-muted-foreground">{conv.lastMessage}</p>
               </div>
               {conv.unreadCount > 0 && (
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-600 text-[10px] font-bold text-white">
@@ -70,7 +73,7 @@ export default function MessagesPage() {
           <div>
             <p className="font-semibold">{conversation.participant.name}</p>
             <p className="text-xs text-muted-foreground">
-              {conversation.participant.online ? "Online" : "Offline"}
+              {conversation.participant.online ? t.common.online : t.common.offline}
             </p>
           </div>
         </div>
@@ -99,9 +102,7 @@ export default function MessagesPage() {
                 <p
                   className={cn(
                     "mt-1 text-[10px]",
-                    msg.senderId === "me"
-                      ? "text-violet-200"
-                      : "text-muted-foreground"
+                    msg.senderId === "me" ? "text-violet-200" : "text-muted-foreground"
                   )}
                 >
                   {msg.timestamp}
@@ -113,7 +114,7 @@ export default function MessagesPage() {
 
         <div className="flex gap-2 border-t border-border p-4">
           <Input
-            placeholder="Type a message..."
+            placeholder={t.messages.typePlaceholder}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && setMessage("")}

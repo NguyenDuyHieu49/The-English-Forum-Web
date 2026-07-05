@@ -3,13 +3,14 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { CourseCard } from "@/components/courses/course-card";
-import { MOCK_COURSES } from "@/mock/courses";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 
 export default function CoursesPage() {
   const tokens = useAppStore((s) => s.userStats.tokens);
   const { t } = useTranslation();
+  const { courses } = useLocalizedContent();
 
   return (
     <div className="space-y-6">
@@ -29,7 +30,7 @@ export default function CoursesPage() {
       </motion.div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {MOCK_COURSES.map((course, i) => (
+        {courses.map((course, i) => (
           <CourseCard key={course.id} course={course} index={i} />
         ))}
       </div>

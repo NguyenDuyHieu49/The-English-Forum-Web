@@ -12,10 +12,9 @@ import {
   ExternalLink,
   GraduationCap,
 } from "lucide-react";
-import { MOCK_COURSES } from "@/mock/courses";
-import { MOCK_CERTIFICATES } from "@/mock/certificates";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -23,12 +22,13 @@ import { cn } from "@/lib/utils";
 
 export default function AchievementsPage() {
   const { t } = useTranslation();
+  const { courses, certificates: localizedCerts } = useLocalizedContent();
   const enrolledCourseIds = useAppStore((s) => s.enrolledCourseIds);
 
-  const enrolledCourses = MOCK_COURSES.filter((c) => enrolledCourseIds.includes(c.id));
+  const enrolledCourses = courses.filter((c) => enrolledCourseIds.includes(c.id));
   const completedCourses = enrolledCourses.filter((c) => c.progress >= 100);
   const inProgressCourses = enrolledCourses.filter((c) => c.progress > 0 && c.progress < 100);
-  const certificates = MOCK_CERTIFICATES.filter((cert) => {
+  const certificates = localizedCerts.filter((cert) => {
     const baseCourseId = cert.courseId.replace("-partial", "");
     return enrolledCourseIds.includes(baseCourseId);
   });

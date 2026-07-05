@@ -16,11 +16,9 @@ import { MissionCard } from "@/components/missions/mission-card";
 import { PetWidget } from "@/components/gamification/pet-widget";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MOCK_COURSES } from "@/mock/courses";
-import { MOCK_DAILY_MISSIONS } from "@/mock/missions";
-import { MOCK_LEADERBOARD, MOCK_WEEKLY_PROGRESS } from "@/mock/user";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 
 export default function HomePage() {
   const claimDailyCheckIn = useAppStore((s) => s.claimDailyCheckIn);
@@ -28,6 +26,7 @@ export default function HomePage() {
   const focusMode = useAppStore((s) => s.focusMode);
   const userStats = useAppStore((s) => s.userStats);
   const { t } = useTranslation();
+  const { courses, missions, leaderboard, weeklyProgress } = useLocalizedContent();
 
   const statCards = [
     { label: t.home.learningHours, value: `${userStats.learningHours}h`, icon: Clock, color: "text-blue-500" },
@@ -111,7 +110,7 @@ export default function HomePage() {
               </Button>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {MOCK_COURSES.slice(0, 4).map((course, i) => (
+              {courses.slice(0, 4).map((course, i) => (
                 <CourseCard key={course.id} course={course} index={i} />
               ))}
             </div>
@@ -126,7 +125,7 @@ export default function HomePage() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
-                <AreaChart data={MOCK_WEEKLY_PROGRESS}>
+                <AreaChart data={weeklyProgress}>
                   <defs>
                     <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
@@ -162,7 +161,7 @@ export default function HomePage() {
               <CardTitle className="text-base">{t.home.dailyMissions}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {MOCK_DAILY_MISSIONS.slice(0, 3).map((m, i) => (
+              {missions.slice(0, 3).map((m, i) => (
                 <MissionCard key={m.id} mission={m} index={i} />
               ))}
             </CardContent>
@@ -172,7 +171,7 @@ export default function HomePage() {
               <CardTitle className="text-base">{t.home.leaderboard}</CardTitle>
             </CardHeader>
             <CardContent>
-              <Leaderboard entries={MOCK_LEADERBOARD} />
+              <Leaderboard entries={leaderboard} />
             </CardContent>
           </Card>
         </div>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn, formatNumber } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface LeaderboardEntry {
   rank: number;
@@ -19,6 +20,8 @@ interface LeaderboardProps {
 }
 
 export function Leaderboard({ entries }: LeaderboardProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       {entries.map((entry, i) => (
@@ -51,10 +54,12 @@ export function Leaderboard({ entries }: LeaderboardProps) {
           </Avatar>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{entry.name}</p>
-            <p className="text-xs text-muted-foreground">Level {entry.level}</p>
+            <p className="text-xs text-muted-foreground">
+              {t.gamification.level} {entry.level}
+            </p>
           </div>
           <span className="text-sm font-semibold text-violet-600 dark:text-violet-400">
-            {formatNumber(entry.xp)} XP
+            {formatNumber(entry.xp)} {t.common.xp}
           </span>
         </motion.div>
       ))}

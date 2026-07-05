@@ -4,11 +4,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { FileUp, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "@/hooks/use-translation";
 
 export default function TeacherApplyPage() {
+  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [cvFile, setCvFile] = useState<string | null>(null);
 
@@ -17,10 +19,8 @@ export default function TeacherApplyPage() {
       <div className="mx-auto max-w-lg py-20 text-center">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
           <div className="mx-auto mb-4 text-5xl">🎓</div>
-          <h1 className="text-2xl font-bold">Application Submitted!</h1>
-          <p className="mt-2 text-muted-foreground">
-            We&apos;ll review your application and get back to you within 5 business days.
-          </p>
+          <h1 className="text-2xl font-bold">{t.teacherApply.submitted}</h1>
+          <p className="mt-2 text-muted-foreground">{t.teacherApply.submittedDesc}</p>
         </motion.div>
       </div>
     );
@@ -29,48 +29,46 @@ export default function TeacherApplyPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="text-3xl font-bold">Teacher Application</h1>
-        <p className="mt-1 text-muted-foreground">
-          Join our community of educators
-        </p>
+        <h1 className="text-3xl font-bold">{t.teacherApply.title}</h1>
+        <p className="mt-1 text-muted-foreground">{t.teacherApply.subtitle}</p>
       </motion.div>
 
       <Card>
         <CardContent className="space-y-5 p-6">
           <div>
-            <Label htmlFor="experience">Experience</Label>
+            <Label htmlFor="experience">{t.teacherApply.experience}</Label>
             <Input
               id="experience"
-              placeholder="Years of teaching experience, subjects taught..."
+              placeholder={t.teacherApply.experiencePlaceholder}
               className="mt-1.5"
             />
           </div>
           <div>
-            <Label htmlFor="education">Education</Label>
+            <Label htmlFor="education">{t.teacherApply.education}</Label>
             <Input
               id="education"
-              placeholder="Degrees, certifications, institutions..."
+              placeholder={t.teacherApply.educationPlaceholder}
               className="mt-1.5"
             />
           </div>
           <div>
-            <Label htmlFor="certificates">Certificates</Label>
+            <Label htmlFor="certificates">{t.teacherApply.certificates}</Label>
             <Input
               id="certificates"
-              placeholder="Relevant certifications (comma separated)"
+              placeholder={t.teacherApply.certificatesPlaceholder}
               className="mt-1.5"
             />
           </div>
           <div>
-            <Label htmlFor="portfolio">Portfolio URL</Label>
+            <Label htmlFor="portfolio">{t.teacherApply.portfolio}</Label>
             <Input
               id="portfolio"
-              placeholder="https://your-portfolio.com"
+              placeholder={t.teacherApply.portfolioPlaceholder}
               className="mt-1.5"
             />
           </div>
           <div>
-            <Label>Upload CV</Label>
+            <Label>{t.teacherApply.uploadCv}</Label>
             <div
               className="mt-1.5 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-8 transition-colors hover:border-violet-500/50 hover:bg-violet-500/5"
               onClick={() => setCvFile("resume.pdf")}
@@ -83,15 +81,13 @@ export default function TeacherApplyPage() {
               ) : (
                 <>
                   <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
-                    Click to upload PDF (mock)
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t.teacherApply.uploadCvHint}</p>
                 </>
               )}
             </div>
           </div>
           <Button className="w-full" size="lg" onClick={() => setSubmitted(true)}>
-            Submit Application
+            {t.teacherApply.submit}
           </Button>
         </CardContent>
       </Card>

@@ -6,23 +6,11 @@ import { Mic, MicOff, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useTranslation } from "@/hooks/use-translation";
 import type { SpeakingFeedback } from "@/types/speaking";
 
-const MOCK_FEEDBACK: SpeakingFeedback = {
-  pronunciation: 82,
-  grammar: 78,
-  fluency: 85,
-  overall: 82,
-  suggestions: [
-    "Try to emphasize the 'th' sound in 'think' and 'through'",
-    "Your sentence structure is good — try using more complex clauses",
-    "Great pacing! Consider pausing slightly between key points",
-  ],
-  transcript:
-    "Human-computer interaction is the study of how people interact with computers and how to design interfaces that are intuitive and efficient.",
-};
-
 export default function AISpeakingPage() {
+  const { t } = useTranslation();
   const [isRecording, setIsRecording] = useState(false);
   const [feedback, setFeedback] = useState<SpeakingFeedback | null>(null);
   const [transcript, setTranscript] = useState("");
@@ -36,26 +24,31 @@ export default function AISpeakingPage() {
   const stopRecording = () => {
     setIsRecording(false);
     setTimeout(() => {
-      setTranscript(MOCK_FEEDBACK.transcript);
-      setFeedback(MOCK_FEEDBACK);
+      setTranscript(t.aiSpeaking.mockTranscript);
+      setFeedback({
+        pronunciation: 82,
+        grammar: 78,
+        fluency: 85,
+        overall: 82,
+        suggestions: t.aiSpeaking.mockSuggestions,
+        transcript: t.aiSpeaking.mockTranscript,
+      });
     }, 800);
   };
 
   const scores = feedback
     ? [
-        { label: "Pronunciation", value: feedback.pronunciation, color: "bg-blue-500" },
-        { label: "Grammar", value: feedback.grammar, color: "bg-violet-500" },
-        { label: "Fluency", value: feedback.fluency, color: "bg-emerald-500" },
+        { label: t.aiSpeaking.scores.pronunciation, value: feedback.pronunciation, color: "bg-blue-500" },
+        { label: t.aiSpeaking.scores.grammar, value: feedback.grammar, color: "bg-violet-500" },
+        { label: t.aiSpeaking.scores.fluency, value: feedback.fluency, color: "bg-emerald-500" },
       ]
     : [];
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="text-3xl font-bold">AI Speaking</h1>
-        <p className="mt-1 text-muted-foreground">
-          Practice speaking and get AI-powered feedback
-        </p>
+        <h1 className="text-3xl font-bold">{t.aiSpeaking.title}</h1>
+        <p className="mt-1 text-muted-foreground">{t.aiSpeaking.subtitle}</p>
       </motion.div>
 
       <Card className="overflow-hidden">
@@ -77,9 +70,7 @@ export default function AISpeakingPage() {
           </motion.div>
 
           <p className="mb-6 text-center text-sm text-muted-foreground">
-            {isRecording
-              ? "Listening... Speak clearly about any topic"
-              : "Click the button below to start recording"}
+            {isRecording ? t.aiSpeaking.listening : t.aiSpeaking.startPrompt}
           </p>
 
           <Button
@@ -90,12 +81,12 @@ export default function AISpeakingPage() {
             {isRecording ? (
               <>
                 <Square className="mr-2 h-4 w-4" />
-                Stop Recording
+                {t.aiSpeaking.stopRecording}
               </>
             ) : (
               <>
                 <Mic className="mr-2 h-4 w-4" />
-                Start Recording
+                {t.aiSpeaking.startRecording}
               </>
             )}
           </Button>
@@ -106,7 +97,7 @@ export default function AISpeakingPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Transcript</CardTitle>
+              <CardTitle className="text-base">{t.aiSpeaking.transcript}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm leading-relaxed">{transcript}</p>
@@ -124,7 +115,7 @@ export default function AISpeakingPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>AI Feedback</span>
+                <span>{t.aiSpeaking.feedback}</span>
                 <span className="text-2xl font-bold gradient-text">
                   {feedback.overall}%
                 </span>
@@ -145,7 +136,7 @@ export default function AISpeakingPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Suggestions</CardTitle>
+              <CardTitle className="text-base">{t.aiSpeaking.suggestions}</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">

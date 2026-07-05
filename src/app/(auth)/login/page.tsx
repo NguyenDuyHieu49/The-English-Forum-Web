@@ -20,7 +20,7 @@ import {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -41,7 +41,7 @@ export default function LoginPage() {
       await loginWithEmail(email, password);
       router.replace("/");
     } catch (err) {
-      setError(getFirebaseAuthErrorMessage(err));
+      setError(getFirebaseAuthErrorMessage(err, locale));
     } finally {
       setLoading(false);
     }
@@ -56,7 +56,7 @@ export default function LoginPage() {
       await loginWithGoogle();
       router.replace("/");
     } catch (err) {
-      setError(getFirebaseAuthErrorMessage(err));
+      setError(getFirebaseAuthErrorMessage(err, locale));
     }
   };
 

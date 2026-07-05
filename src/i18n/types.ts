@@ -12,6 +12,32 @@ export type TranslationDictionary = {
     submit: string;
     preview: string;
     or: string;
+    you: string;
+    xp: string;
+    minutes: string;
+    min: string;
+    questions: string;
+    unlocked: string;
+    online: string;
+    offline: string;
+    members: string;
+    learner: string;
+    edit: string;
+    close: string;
+    difficulty: {
+      easy: string;
+      medium: string;
+      hard: string;
+    };
+    roles: {
+      student: string;
+      teacher: string;
+      professor: string;
+      designer: string;
+      group: string;
+      developer: string;
+      researcher: string;
+    };
   };
   nav: {
     home: string;
@@ -57,6 +83,20 @@ export type TranslationDictionary = {
     loginDesc: string;
     passwordsMismatch: string;
     invalidCredentials: string;
+    errors: {
+      invalidEmail: string;
+      userDisabled: string;
+      userNotFound: string;
+      wrongPassword: string;
+      invalidCredential: string;
+      emailInUse: string;
+      weakPassword: string;
+      popupClosed: string;
+      popupBlocked: string;
+      operationNotAllowed: string;
+      tooManyRequests: string;
+      default: string;
+    };
   };
   home: {
     welcome: string;
@@ -103,6 +143,29 @@ export type TranslationDictionary = {
     level: string;
     reward: string;
     dayStreak: string;
+    dailyChest: string;
+    rewardReceived: string;
+    rarityReward: string;
+    loot: {
+      chestRare: string;
+      chestCommon: string;
+      luckyLegendary: string;
+      luckyEpic: string;
+      luckyRare: string;
+    };
+    rewards: {
+      tokens: string;
+      xp: string;
+      petFood: string;
+      decoration: string;
+      badge: string;
+      luckyBox: string;
+    };
+    units: {
+      video: string;
+      min: string;
+      sessions: string;
+    };
   };
   pet: {
     title: string;
@@ -140,6 +203,108 @@ export type TranslationDictionary = {
     lessons: string;
     lessonList: string;
     startLesson: string;
+    lessonsCount: string;
+  };
+  profile: {
+    title: string;
+    learnerLevel: string;
+    learningHours: string;
+    totalXp: string;
+    focusScore: string;
+    achievements: string;
+    learningHistory: string;
+    xpToNext: string;
+  };
+  quiz: {
+    title: string;
+    subtitle: string;
+    startQuiz: string;
+    notFound: string;
+    backToQuizzes: string;
+    quizComplete: string;
+    correctAnswers: string;
+    reviewAnswers: string;
+    hideReview: string;
+    questionOf: string;
+    nextQuestion: string;
+    submitQuiz: string;
+    createTitle: string;
+    createSubtitle: string;
+    created: string;
+    createdDesc: string;
+    createAnother: string;
+    quizTitle: string;
+    quizDescription: string;
+    difficulty: string;
+    question: string;
+    questionText: string;
+    choice: string;
+    addQuestion: string;
+    submitQuizBtn: string;
+    untitled: string;
+    questionPlaceholder: string;
+  };
+  classroom: {
+    teacherScreenShare: string;
+    slideLabel: string;
+    chat: string;
+    members: string;
+    files: string;
+    messagePlaceholder: string;
+    roles: {
+      teacher: string;
+      student: string;
+    };
+  };
+  messages: {
+    title: string;
+    typePlaceholder: string;
+  };
+  search: {
+    title: string;
+    subtitle: string;
+    placeholder: string;
+    types: {
+      course: string;
+      teacher: string;
+      post: string;
+      quiz: string;
+    };
+  };
+  aiSpeaking: {
+    title: string;
+    subtitle: string;
+    listening: string;
+    startPrompt: string;
+    startRecording: string;
+    stopRecording: string;
+    transcript: string;
+    feedback: string;
+    suggestions: string;
+    scores: {
+      pronunciation: string;
+      grammar: string;
+      fluency: string;
+    };
+    mockTranscript: string;
+    mockSuggestions: string[];
+  };
+  teacherApply: {
+    title: string;
+    subtitle: string;
+    submitted: string;
+    submittedDesc: string;
+    experience: string;
+    experiencePlaceholder: string;
+    education: string;
+    educationPlaceholder: string;
+    certificates: string;
+    certificatesPlaceholder: string;
+    portfolio: string;
+    portfolioPlaceholder: string;
+    uploadCv: string;
+    uploadCvHint: string;
+    submit: string;
   };
   achievements: {
     title: string;
@@ -230,6 +395,7 @@ export type TranslationDictionary = {
     languageDesc: string;
     vietnamese: string;
     english: string;
+    currentLanguage: string;
   };
   reading: {
     dictionary: string;

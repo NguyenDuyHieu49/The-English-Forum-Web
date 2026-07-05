@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
@@ -8,14 +8,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CreatePost } from "@/components/social/create-post";
-import { MOCK_POSTS, MOCK_STORIES } from "@/mock/social";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
+import { MOCK_STORIES } from "@/mock/social";
 import type { Post } from "@/types/social";
 import { cn } from "@/lib/utils";
 
 export default function SocialPage() {
   const { t } = useTranslation();
-  const [posts, setPosts] = useState(MOCK_POSTS);
+  const { posts: localizedPosts } = useLocalizedContent();
+  const [posts, setPosts] = useState(localizedPosts);
+
+  useEffect(() => {
+    setPosts(localizedPosts);
+  }, [localizedPosts]);
 
   const toggleLike = (postId: string) => {
     setPosts((prev) =>
@@ -38,9 +44,9 @@ export default function SocialPage() {
       id: `p-${Date.now()}`,
       user: {
         id: "you",
-        name: "You",
+        name: t.common.you,
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=You",
-        role: "Student",
+        role: t.common.roles.student,
       },
       content,
       image,

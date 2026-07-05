@@ -10,6 +10,8 @@ import {
   signOut,
   type Auth,
 } from "firebase/auth";
+import type { Locale } from "@/constants/app";
+import { getDictionary } from "@/i18n";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -45,39 +47,40 @@ export function isFirebaseConfigured(): boolean {
   );
 }
 
-export function getFirebaseAuthErrorMessage(error: unknown): string {
+export function getFirebaseAuthErrorMessage(error: unknown, locale: Locale = "vi"): string {
+  const errors = getDictionary(locale).auth.errors;
   if (error instanceof FirebaseError) {
     switch (error.code) {
       case "auth/invalid-email":
-        return "Email không hợp lệ.";
+        return errors.invalidEmail;
       case "auth/user-disabled":
-        return "Tài khoản đã bị vô hiệu hóa.";
+        return errors.userDisabled;
       case "auth/user-not-found":
-        return "Không tìm thấy tài khoản với email này.";
+        return errors.userNotFound;
       case "auth/wrong-password":
-        return "Mật khẩu không đúng.";
+        return errors.wrongPassword;
       case "auth/invalid-credential":
-        return "Email hoặc mật khẩu không đúng.";
+        return errors.invalidCredential;
       case "auth/email-already-in-use":
-        return "Email đã được đăng ký.";
+        return errors.emailInUse;
       case "auth/weak-password":
-        return "Mật khẩu quá yếu (tối thiểu 6 ký tự).";
+        return errors.weakPassword;
       case "auth/popup-closed-by-user":
-        return "Đã hủy đăng nhập Google.";
+        return errors.popupClosed;
       case "auth/popup-blocked":
-        return "Trình duyệt chặn popup. Hãy cho phép popup cho localhost.";
+        return errors.popupBlocked;
       case "auth/operation-not-allowed":
-        return "Phương thức đăng nhập chưa được bật trong Firebase Console.";
+        return errors.operationNotAllowed;
       case "auth/too-many-requests":
-        return "Quá nhiều lần thử. Vui lòng thử lại sau.";
+        return errors.tooManyRequests;
       default:
-        return error.message || "Đăng nhập thất bại.";
+        return error.message || errors.default;
     }
   }
   if (error instanceof Error) {
     return error.message;
   }
-  return "Đăng nhập thất bại.";
+  return errors.default;
 }
 
 export async function loginWithEmail(email: string, password: string) {

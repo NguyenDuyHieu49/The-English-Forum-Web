@@ -1,3 +1,5 @@
+import type { Locale } from "@/constants/app";
+import { getDictionary } from "@/i18n";
 import type { InventoryItem, InventoryItemType, InventorySource, OpenLootResult } from "@/types/inventory";
 
 export function createInventoryItem(
@@ -12,23 +14,25 @@ export function createInventoryItem(
   };
 }
 
-export function openInventoryItem(type: InventoryItemType): OpenLootResult {
+export function openInventoryItem(type: InventoryItemType, locale: Locale = "en"): OpenLootResult {
+  const loot = getDictionary(locale).gamification.loot;
+
   if (type === "lucky_box") {
     const roll = Math.random();
     if (roll > 0.85) {
-      return { label: "100 Tokens + 150 XP", tokens: 100, xp: 150, rarity: "legendary" };
+      return { label: loot.luckyLegendary, tokens: 100, xp: 150, rarity: "legendary" };
     }
     if (roll > 0.55) {
-      return { label: "60 Tokens + 100 XP", tokens: 60, xp: 100, rarity: "epic" };
+      return { label: loot.luckyEpic, tokens: 60, xp: 100, rarity: "epic" };
     }
-    return { label: "35 Tokens + 70 XP", tokens: 35, xp: 70, rarity: "rare" };
+    return { label: loot.luckyRare, tokens: 35, xp: 70, rarity: "rare" };
   }
 
   const roll = Math.random();
   if (roll > 0.7) {
-    return { label: "30 Tokens + 50 XP", tokens: 30, xp: 50, rarity: "rare" };
+    return { label: loot.chestRare, tokens: 30, xp: 50, rarity: "rare" };
   }
-  return { label: "15 Tokens + 25 XP", tokens: 15, xp: 25, rarity: "common" };
+  return { label: loot.chestCommon, tokens: 15, xp: 25, rarity: "common" };
 }
 
 export function todayKey(): string {

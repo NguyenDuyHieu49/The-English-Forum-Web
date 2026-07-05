@@ -82,7 +82,7 @@ export function CourseCard({ course, index = 0 }: CourseCardProps) {
             <div className="mb-3 space-y-1.5">
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>
-                  {course.completedLessons}/{course.lessonCount} lessons
+                  {course.completedLessons}/{course.lessonCount} {t.courses.lessonsCount}
                 </span>
                 <span>{course.progress}%</span>
               </div>

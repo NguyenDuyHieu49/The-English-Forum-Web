@@ -1,22 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Target } from "lucide-react";
 import { MissionCard } from "@/components/missions/mission-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_DAILY_MISSIONS } from "@/mock/missions";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 import type { DailyMission } from "@/types/mission";
 
 export default function MissionsPage() {
   const streak = useAppStore((s) => s.userStats.streak);
   const addReward = useAppStore((s) => s.addReward);
   const addInventoryItem = useAppStore((s) => s.addInventoryItem);
-  const { t } = useTranslation();
-  const [missions, setMissions] = useState<DailyMission[]>(MOCK_DAILY_MISSIONS);
+  const { t, locale } = useTranslation();
+  const { missions: localizedMissions } = useLocalizedContent();
+  const [missions, setMissions] = useState<DailyMission[]>(localizedMissions);
   const [feedback, setFeedback] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMissions((prev) =>
+      localizedMissions.map((m) => {
+        const existing = prev.find((p) => p.id === m.id);
+        return existing
+          ? { ...m, completed: existing.completed, progress: existing.progress, submittedFile: existing.submittedFile }
+          : m;
+      })
+    );
+  }, [localizedMissions]);
 
   const handleSubmitFile = (missionId: string, file: File) => {
     const mission = missions.find((m) => m.id === missionId);
@@ -35,18 +47,19 @@ export default function MissionsPage() {
       )
     );
 
+    const rewardLabels = t.gamification.rewards;
     addReward({
       id: `mission-${missionId}`,
       type: "tokens",
       amount: mission.tokenReward,
-      label: `${mission.tokenReward} Tokens`,
+      label: `${mission.tokenReward} ${rewardLabels.tokens}`,
       rarity: "common",
     });
     addReward({
       id: `mission-xp-${missionId}`,
       type: "xp",
       amount: mission.xpReward,
-      label: `${mission.xpReward} XP`,
+      label: `${mission.xpReward} ${rewardLabels.xp}`,
       rarity: "common",
     });
     addInventoryItem("lucky_box", "mission");

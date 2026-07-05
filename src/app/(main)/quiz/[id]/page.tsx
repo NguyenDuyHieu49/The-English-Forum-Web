@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useCallback } from "react";
+import { use, useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,9 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { FocusCamera } from "@/components/focus/focus-camera";
 import { MouseBehaviorWarning } from "@/components/focus/mouse-behavior-warning";
-import { MOCK_QUIZZES } from "@/mock/quizzes";
 import { useAppStore } from "@/store/app-store";
 import { generateRandomReward } from "@/services/gamification";
+import { useTranslation } from "@/hooks/use-translation";
+import { useLocalizedContent } from "@/hooks/use-localized-content";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -20,7 +21,9 @@ export default function QuizTakePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const quiz = MOCK_QUIZZES.find((q) => q.id === id);
+  const { t, locale } = useTranslation();
+  const { quizzes } = useLocalizedContent();
+  const quiz = useMemo(() => quizzes.find((q) => q.id === id), [quizzes, id]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [answers, setAnswers] = useState<
@@ -50,16 +53,16 @@ export default function QuizTakePage({
     } else {
       setFinalAnswers(newAnswers);
       setShowResult(true);
-      addReward(generateRandomReward());
+      addReward(generateRandomReward(locale));
     }
-  }, [quiz, selectedChoice, currentIndex, answers, addReward]);
+  }, [quiz, selectedChoice, currentIndex, answers, addReward, locale]);
 
   if (!quiz) {
     return (
       <div className="text-center py-20">
-        <p className="text-muted-foreground">Quiz not found</p>
+        <p className="text-muted-foreground">{t.quiz.notFound}</p>
         <Button className="mt-4" asChild>
-          <Link href="/quiz">Back to Quizzes</Link>
+          <Link href="/quiz">{t.quiz.backToQuizzes}</Link>
         </Button>
       </div>
     );
@@ -79,10 +82,10 @@ export default function QuizTakePage({
           <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-600">
             <Trophy className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold">Quiz Complete!</h1>
+          <h1 className="text-3xl font-bold">{t.quiz.quizComplete}</h1>
           <p className="mt-2 text-5xl font-bold gradient-text">{score}%</p>
           <p className="mt-2 text-muted-foreground">
-            {correctCount}/{quiz.questions.length} correct answers
+            {correctCount}/{quiz.questions.length} {t.quiz.correctAnswers}
           </p>
         </motion.div>
 
@@ -107,9 +110,7 @@ export default function QuizTakePage({
                         <p className="text-sm font-medium">{q.text}</p>
                       </div>
                       {q.explanation && (
-                        <p className="ml-6 text-xs text-muted-foreground">
-                          {q.explanation}
-                        </p>
+                        <p className="ml-6 text-xs text-muted-foreground">{q.explanation}</p>
                       )}
                     </CardContent>
                   </Card>
@@ -125,10 +126,10 @@ export default function QuizTakePage({
             className="flex-1"
             onClick={() => setShowReview(!showReview)}
           >
-            {showReview ? "Hide Review" : "Review Answers"}
+            {showReview ? t.quiz.hideReview : t.quiz.reviewAnswers}
           </Button>
           <Button className="flex-1" asChild>
-            <Link href="/quiz">Back to Quizzes</Link>
+            <Link href="/quiz">{t.quiz.backToQuizzes}</Link>
           </Button>
         </div>
       </div>
@@ -146,7 +147,7 @@ export default function QuizTakePage({
         <div>
           <h1 className="text-xl font-bold">{quiz.title}</h1>
           <p className="text-sm text-muted-foreground">
-            Question {currentIndex + 1} of {quiz.questions.length}
+            {t.quiz.questionOf} {currentIndex + 1} / {quiz.questions.length}
           </p>
         </div>
         <FocusCamera className="hidden sm:block" />
@@ -201,7 +202,7 @@ export default function QuizTakePage({
         disabled={!selectedChoice}
         onClick={handleSubmit}
       >
-        {currentIndex < quiz.questions.length - 1 ? "Next Question" : "Submit Quiz"}
+        {currentIndex < quiz.questions.length - 1 ? t.quiz.nextQuestion : t.quiz.submitQuiz}
       </Button>
     </div>
   );
