@@ -11,9 +11,12 @@ import { ArenaXpBar } from "@/components/arena/arena-xp-bar";
 import { LeaderboardPanel } from "@/components/arena/leaderboard-panel";
 import { LevelUpModal } from "@/components/arena/game-result-modal";
 import { ConfettiEffect } from "@/components/arena/confetti-effect";
+import { PvpArenaBanner } from "@/components/battle-arena/pvp-arena-banner";
 import { useArenaStore } from "@/store/arena-store";
+import { useBattleArenaStore } from "@/store/battle-arena-store";
 import { getLeaderboard } from "@/services/arena/leaderboard";
 import { DAILY_REWARDS, STAGES_BEFORE_BOSS, VIETNAM_CITIES } from "@/constants/arena";
+import { useTranslation } from "@/hooks/use-translation";
 
 const GAME_IDS = [
   "word-hunter",
@@ -24,7 +27,9 @@ const GAME_IDS = [
 ] as const;
 
 export default function GamesHubPage() {
+  const { t } = useTranslation();
   const initArena = useArenaStore((s) => s.initArena);
+  const initBattleArena = useBattleArenaStore((s) => s.initBattleArena);
   const profile = useArenaStore((s) => s.gameProfile);
   const friends = useArenaStore((s) => s.friends);
   const friendActivity = useArenaStore((s) => s.friendActivity);
@@ -39,7 +44,8 @@ export default function GamesHubPage() {
 
   useEffect(() => {
     initArena();
-  }, [initArena]);
+    initBattleArena();
+  }, [initArena, initBattleArena]);
 
   const cityBoard = getLeaderboard("city", {
     city: profile.city,
@@ -59,10 +65,10 @@ export default function GamesHubPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-3xl font-black text-transparent">
-              English Adventure Arena
+              {t.nav.games}
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Learn English through addictive mini-games. Compete in your city!
+              {t.battleArena.hubSubtitle}
             </p>
           </div>
           <ArenaStatsBar
@@ -110,10 +116,12 @@ export default function GamesHubPage() {
         </motion.div>
       )}
 
+      <PvpArenaBanner />
+
       <section>
         <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
           <Zap className="h-5 w-5 text-violet-500" />
-          Mini Games
+          {t.battleArena.soloGames}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {GAME_IDS.map((id, i) => (

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Clock, Flame, Gamepad2, Package, Sparkles, Trophy, Zap } from "lucide-react";
+import { Clock, Flame, Gamepad2, Package, Sparkles, Swords, Trophy, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -70,9 +70,12 @@ export default function ProfilePage() {
                 Lv.{arenaProfile.arenaLevel} · {arenaProfile.coins} coins · {arenaProfile.city}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" asChild>
                 <Link href="/profile/inventory"><Package className="mr-1 h-4 w-4" />Inventory</Link>
+              </Button>
+              <Button variant="outline" size="sm" asChild className="border-red-500/30 text-red-600 hover:bg-red-500/5">
+                <Link href="/games/battle-arena"><Swords className="mr-1 h-4 w-4" />PvP Battle</Link>
               </Button>
               <Button size="sm" asChild>
                 <Link href="/games">Play</Link>
