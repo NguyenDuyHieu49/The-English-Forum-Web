@@ -47,6 +47,8 @@ export const vi: TranslationDictionary = {
     social: "Bảng tin",
     messages: "Tin nhắn",
     missions: "Nhiệm vụ hàng ngày",
+    games: "English Adventure Arena",
+    leaderboard: "Bảng xếp hạng",
     inventory: "Kho đồ",
     courses: "Khóa học",
     achievements: "Chứng chỉ",

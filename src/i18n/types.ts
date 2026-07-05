@@ -45,6 +45,8 @@ export type TranslationDictionary = {
     social: string;
     messages: string;
     missions: string;
+    games: string;
+    leaderboard: string;
     inventory: string;
     courses: string;
     achievements: string;

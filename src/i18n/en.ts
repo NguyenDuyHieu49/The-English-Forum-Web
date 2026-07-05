@@ -47,6 +47,8 @@ export const en: TranslationDictionary = {
     social: "Social Feed",
     messages: "Messages",
     missions: "Daily Missions",
+    games: "English Adventure Arena",
+    leaderboard: "Leaderboard",
     inventory: "Inventory",
     courses: "Courses",
     achievements: "Certificates",

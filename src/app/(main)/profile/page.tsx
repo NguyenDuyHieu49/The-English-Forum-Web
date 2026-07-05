@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Clock, Flame, Sparkles, Trophy, Zap } from "lucide-react";
+import { Clock, Flame, Gamepad2, Package, Sparkles, Trophy, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -10,11 +11,16 @@ import { useAppStore } from "@/store/app-store";
 import { xpToNextLevel } from "@/services/gamification";
 import { useTranslation } from "@/hooks/use-translation";
 import { useLocalizedContent } from "@/hooks/use-localized-content";
+import { useArenaStore } from "@/store/arena-store";
+import { ArenaXpBar } from "@/components/arena/arena-xp-bar";
+import { Button } from "@/components/ui/button";
 
 export default function ProfilePage() {
   const { t } = useTranslation();
   const stats = useAppStore((s) => s.userStats);
   const { achievements, learningHistory } = useLocalizedContent();
+  const arenaProfile = useArenaStore((s) => s.gameProfile);
+  const equippedTitle = useArenaStore((s) => s.getEquippedTitle());
   const xpRemaining = xpToNextLevel(stats.xp);
 
   const displayAchievements = achievements.map((a) => {
@@ -39,6 +45,9 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold">{t.profile.title}</h1>
           <p className="text-muted-foreground">
             {t.gamification.level} {stats.level} {t.profile.learnerLevel}
+            {equippedTitle && (
+              <span className="ml-2 text-violet-600">· {equippedTitle}</span>
+            )}
           </p>
           <div className="mt-2 flex items-center gap-1.5 text-sm">
             <Flame className="h-4 w-4 text-orange-500" />
@@ -48,6 +57,31 @@ export default function ProfilePage() {
           </div>
         </div>
       </motion.div>
+
+      <Card className="border-violet-500/20 bg-gradient-to-r from-violet-500/5 to-indigo-500/5">
+        <CardContent className="space-y-4 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold flex items-center gap-2">
+                <Gamepad2 className="h-4 w-4 text-violet-500" />
+                English Adventure Arena
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Lv.{arenaProfile.arenaLevel} · {arenaProfile.coins} coins · {arenaProfile.city}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/profile/inventory"><Package className="mr-1 h-4 w-4" />Inventory</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/games">Play</Link>
+              </Button>
+            </div>
+          </div>
+          <ArenaXpBar xp={arenaProfile.arenaXp} level={arenaProfile.arenaLevel} />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
