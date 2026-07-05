@@ -20,7 +20,7 @@ export default function ProfileInventoryPage() {
   const equipItem = useArenaStore((s) => s.equipItem);
   const unequipItem = useArenaStore((s) => s.unequipItem);
   const openChest = useArenaStore((s) => s.openChest);
-  const useConsumable = useArenaStore((s) => s.useConsumable);
+  const consumeItem = useArenaStore((s) => s.consumeItem);
   const equipped = useArenaStore((s) => s.equipped);
 
   const consumables = inventory.filter((i) =>
@@ -65,7 +65,7 @@ export default function ProfileInventoryPage() {
                       size="sm"
                       className="w-full"
                       onClick={() =>
-                        item.type === "lucky_chest" ? openChest(item.id) : useConsumable(item.id)
+                        item.type === "lucky_chest" ? openChest(item.id) : consumeItem(item.id)
                       }
                     >
                       <Sparkles className="mr-2 h-4 w-4" />

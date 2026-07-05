@@ -33,7 +33,7 @@ interface ArenaState extends ArenaDatabase {
   openChest: (itemId: string) => { coins: number; rarity: string } | null;
   equipItem: (itemId: string) => void;
   unequipItem: (slot: CosmeticSlot) => void;
-  useConsumable: (itemId: string) => boolean;
+  consumeItem: (itemId: string) => boolean;
   startBossBattle: () => void;
   bossAnswer: (correct: boolean) => "ongoing" | "victory" | "defeat";
   sendChallenge: (friendId: string, gameId: GameId) => void;
@@ -108,7 +108,7 @@ export const useArenaStore = create<ArenaState>()(
           lastGame: result,
         });
 
-        let inventory = [...s.inventory];
+        const inventory = [...s.inventory];
         for (const catalogId of achievementResult.newItems) {
           const item = createInventoryFromCatalog(catalogId);
           if (item) inventory.push(item);
@@ -161,7 +161,7 @@ export const useArenaStore = create<ArenaState>()(
 
         const nextDay = (s.gameProfile.lastDailyRewardDay % 7) + 1;
         const rewardConfig = DAILY_REWARDS.find((r) => r.day === nextDay)!;
-        let inventory = [...s.inventory];
+        const inventory = [...s.inventory];
         let coins = s.gameProfile.coins;
 
         if (rewardConfig.coins) coins += rewardConfig.coins;
@@ -194,7 +194,7 @@ export const useArenaStore = create<ArenaState>()(
         if (!item || item.type !== "lucky_chest") return null;
 
         const loot = openMysteryChest();
-        let inventory = s.inventory.filter((i) => i.id !== itemId);
+        const inventory = s.inventory.filter((i) => i.id !== itemId);
         if (loot.item) inventory.push(loot.item);
 
         set({
@@ -240,7 +240,7 @@ export const useArenaStore = create<ArenaState>()(
         set({ equipped, inventory });
       },
 
-      useConsumable: (itemId) => {
+      consumeItem: (itemId) => {
         const s = get();
         const idx = s.inventory.findIndex((i) => i.id === itemId);
         if (idx === -1) return false;

@@ -24,7 +24,7 @@ export function calculateBattleRewards(
   won: boolean,
   mode: MatchMode,
   profile: RankedProfile,
-  questionIds: string[]
+  _questionIds: string[]
 ): BattleReward {
   const baseXp = won ? 80 : 30;
   const baseCoins = won ? 50 : 15;

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { SOCIAL_SCROLL_WARNING_MS } from "@/constants/focus";
@@ -55,7 +56,7 @@ export function SocialScrollReminder() {
             {t.focus.keepBrowsing}
           </Button>
           <Button className="flex-1" asChild>
-            <a href="/courses">{t.focus.backToCourses}</a>
+            <Link href="/courses">{t.focus.backToCourses}</Link>
           </Button>
         </div>
       </DialogContent>

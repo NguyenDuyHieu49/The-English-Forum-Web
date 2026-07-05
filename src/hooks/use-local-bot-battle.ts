@@ -5,8 +5,6 @@ import type {
   BattleMatch,
   BattleRound,
   BattlePlayerState,
-  MatchMode,
-  BattleRegion,
   QueueJoinPayload,
   MatchPhase,
 } from "@/types/battle-arena";

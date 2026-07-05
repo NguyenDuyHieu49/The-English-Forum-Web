@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "next dev",
     "dev:clean": "rm -rf .next && next dev",
+    "dev:full": "concurrently \"npm run dev\" \"npm run battle:server\"",
+    "battle:server": "tsx server/index.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -38,6 +40,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "recharts": "^3.8.1",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.14"
   },
@@ -48,7 +51,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^15.5.19",
+    "concurrently": "^9.1.2",
+    "socket.io": "^4.8.1",
     "tailwindcss": "^4",
+    "tsx": "^4.19.4",
     "typescript": "^5"
   }
 }

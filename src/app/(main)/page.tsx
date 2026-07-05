@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Area,
@@ -106,7 +107,7 @@ export default function HomePage() {
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-semibold">{t.nav.courses}</h2>
               <Button variant="ghost" size="sm" asChild>
-                <a href="/courses">{t.common.viewAll}</a>
+                <Link href="/courses">{t.common.viewAll}</Link>
               </Button>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
