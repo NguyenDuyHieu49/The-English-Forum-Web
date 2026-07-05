@@ -407,4 +407,16 @@ export type TranslationDictionary = {
     level: string;
     noSynonyms: string;
   };
+  battleArena: {
+    title: string;
+    subtitle: string;
+    hubSubtitle: string;
+    pvpBadge: string;
+    findMatch: string;
+    heroes: string;
+    ranks: string;
+    streak: string;
+    soloGames: string;
+    onlineHint: string;
+  };
 };

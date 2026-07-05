@@ -420,4 +420,16 @@ export const vi: TranslationDictionary = {
     level: "Trình độ",
     noSynonyms: "Không có từ đồng nghĩa",
   },
+  battleArena: {
+    title: "English Battle Arena",
+    subtitle: "Đấu PvP real-time. Trả lời nhanh, tấn công mạnh, leo rank!",
+    hubSubtitle: "Mini-game solo và PvP real-time — học tiếng Anh qua thi đấu.",
+    pvpBadge: "PvP Live",
+    findMatch: "Tìm Trận",
+    heroes: "Tướng",
+    ranks: "Xếp hạng",
+    streak: "Chuỗi thắng",
+    soloGames: "Mini Game Solo",
+    onlineHint: "Hàng trăm người chơi online — ghép trận ngay trong Battle Arena",
+  },
 };

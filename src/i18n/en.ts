@@ -420,4 +420,16 @@ export const en: TranslationDictionary = {
     level: "Level",
     noSynonyms: "No synonyms found",
   },
+  battleArena: {
+    title: "English Battle Arena",
+    subtitle: "Real-time PvP battles. Answer faster, attack harder, climb the ranks!",
+    hubSubtitle: "Solo mini-games and real-time PvP — learn English through competition.",
+    pvpBadge: "PvP Live",
+    findMatch: "Find Match",
+    heroes: "Heroes",
+    ranks: "Ranks",
+    streak: "Streak",
+    soloGames: "Solo Mini Games",
+    onlineHint: "Warriors online worldwide — match instantly in Battle Arena",
+  },
 };

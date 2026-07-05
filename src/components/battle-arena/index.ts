@@ -1,3 +1,4 @@
+export { PvpArenaBanner } from "./pvp-arena-banner";
 export { RankBadge } from "./rank-badge";
 export { HeroCard } from "./hero-card";
 export { HpBar, ManaBar } from "./hp-bar";
