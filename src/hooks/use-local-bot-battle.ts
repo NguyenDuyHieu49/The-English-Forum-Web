@@ -16,7 +16,9 @@ import {
   BASE_ATTACK_DAMAGE,
   MATCHMAKING_TIPS,
   ENGLISH_TIPS,
+  ULTIMATE_MANA_COST,
 } from "@/constants/battle-arena";
+import { getHero } from "@/constants/battle-arena";
 import { selectBattleQuestions } from "@/mock/battle-questions";
 
 export interface LocalBotState {
@@ -78,6 +80,19 @@ function createLocalPlayer(payload: QueueJoinPayload): BattlePlayerState {
     combo: 0,
     socketId: "local",
   };
+}
+
+function calcUltimateDamage(player: BattlePlayerState, category: string): number {
+  const hero = getHero(player.heroId);
+  let damage = BASE_ATTACK_DAMAGE;
+  if (hero) {
+    if (hero.specialty === category) {
+      damage *= hero.passive.damageMultiplier ?? 1;
+    }
+    damage *= hero.ultimate.damageMultiplier ?? 2;
+  }
+  damage += player.combo * 2;
+  return Math.round(damage);
 }
 
 export function useLocalBotBattle() {
@@ -345,6 +360,59 @@ export function useLocalBotBattle() {
     });
   }, [scheduleClearAttack]);
 
+  const useUltimate = useCallback((_matchId: string, userId: string) => {
+    setState((prev) => {
+      if (!prev.match || !prev.currentRound) return prev;
+
+      const playerIdx = prev.match.players.findIndex((p) => p.userId === userId);
+      if (playerIdx < 0) return prev;
+
+      const players = [...prev.match.players] as [BattlePlayerState, BattlePlayerState];
+      if (Date.now() < players[playerIdx].stunnedUntil) return prev;
+      if (players[playerIdx].mana < ULTIMATE_MANA_COST) return prev;
+
+      const opponentIdx = playerIdx === 0 ? 1 : 0;
+      const category = prev.currentRound.question.category;
+      const damage = calcUltimateDamage(players[playerIdx], category);
+
+      players[opponentIdx] = {
+        ...players[opponentIdx],
+        hp: Math.max(0, players[opponentIdx].hp - damage),
+      };
+      players[playerIdx] = { ...players[playerIdx], mana: 0 };
+
+      // Pronunciation Paladin ultimate: self heal
+      if (players[playerIdx].heroId === "pronunciation-paladin") {
+        players[playerIdx] = {
+          ...players[playerIdx],
+          hp: Math.min(MAX_HP, players[playerIdx].hp + 15),
+        };
+      }
+
+      if (botAnswerTimerRef.current) clearTimeout(botAnswerTimerRef.current);
+      scheduleClearAttack();
+
+      const updatedMatch = { ...prev.match, players };
+      matchRef.current = updatedMatch;
+
+      if (players[opponentIdx].hp <= 0) {
+        return {
+          ...prev,
+          match: { ...updatedMatch, winnerId: userId, phase: "victory" as MatchPhase },
+          winnerId: userId,
+          phase: "victory",
+          lastAttack: { damage, attacker: userId },
+        };
+      }
+
+      return {
+        ...prev,
+        match: updatedMatch,
+        lastAttack: { damage, attacker: userId },
+      };
+    });
+  }, [scheduleClearAttack]);
+
   const resetState = useCallback(() => {
     clearTimers();
     setState({
@@ -368,7 +436,7 @@ export function useLocalBotBattle() {
     joinQueue,
     leaveQueue,
     submitAnswer,
-    useUltimate: () => {},
+    useUltimate,
     reconnect: () => {},
     resetState,
     tips: MATCHMAKING_TIPS,

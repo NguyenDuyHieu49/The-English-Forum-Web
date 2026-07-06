@@ -32,7 +32,7 @@ export function BattleScreen({
   const opponent = match.players[playerIdx === 0 ? 1 : 0];
   const playerHero = getHero(player.heroId);
   const opponentHero = getHero(opponent.heroId);
-  const ultimateReady = player.mana >= 100;
+  const ultimateReady = player.mana >= 100 && !stunned && !currentRound?.answeredBy;
 
   const speakText = (text: string) => {
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -167,10 +167,11 @@ export function BattleScreen({
           <Button
             size="lg"
             onClick={onUltimate}
-            className="bg-gradient-to-r from-yellow-500 to-amber-600 font-bold shadow-lg shadow-amber-500/30"
+            disabled={stunned}
+            className="bg-gradient-to-r from-yellow-500 to-amber-600 font-bold shadow-lg shadow-amber-500/30 disabled:opacity-50"
           >
             <Zap className="mr-2 h-5 w-5" />
-            ULTIMATE!
+            {playerHero?.ultimate.name ?? "ULTIMATE"}!
           </Button>
         </motion.div>
       )}
