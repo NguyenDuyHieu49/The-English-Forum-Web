@@ -29,6 +29,7 @@ export interface LocalBotState {
   winnerId: string | null;
   lastAttack: { damage: number; attacker: string } | null;
   connected: boolean;
+  stunTick: number;
 }
 
 const BOT_NAMES = ["AI_Rival", "BotMaster", "ShadowFoe", "GrammarBot", "WordBot"];
@@ -90,17 +91,92 @@ export function useLocalBotBattle() {
     winnerId: null,
     lastAttack: null,
     connected: false,
+    stunTick: 0,
   });
 
   const questionsRef = useRef<ReturnType<typeof selectBattleQuestions>>([]);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const botAnswerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const matchRef = useRef<BattleMatch | null>(null);
+  const startRoundRef = useRef<(match: BattleMatch, roundIndex: number) => void>(() => {});
 
   const clearTimers = () => {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
     if (botAnswerTimerRef.current) clearTimeout(botAnswerTimerRef.current);
   };
+
+  const scheduleClearAttack = useCallback(() => {
+    timersRef.current.push(
+      setTimeout(() => {
+        setState((s) => ({ ...s, lastAttack: null }));
+      }, 1200)
+    );
+  }, []);
+
+  const scheduleBotAnswer = useCallback((match: BattleMatch, roundIndex: number) => {
+    if (botAnswerTimerRef.current) clearTimeout(botAnswerTimerRef.current);
+
+    const botDelay = 2000 + Math.random() * 4000;
+    botAnswerTimerRef.current = setTimeout(() => {
+      setState((prev) => {
+        if (!prev.match || !prev.currentRound || prev.currentRound.answeredBy) return prev;
+        if (prev.currentRound.roundIndex !== roundIndex) return prev;
+
+        const botCorrect = Math.random() < 0.55;
+        if (!botCorrect) {
+          // Bot wrong — round stays open for player to try again
+          return prev;
+        }
+
+        const botIdx = prev.match.players.findIndex((p) => p.userId.startsWith("bot"));
+        const playerIdx = botIdx === 0 ? 1 : 0;
+        const damage = BASE_ATTACK_DAMAGE + Math.floor(Math.random() * 8);
+
+        const players = [...prev.match.players] as [BattlePlayerState, BattlePlayerState];
+        players[playerIdx] = { ...players[playerIdx], hp: Math.max(0, players[playerIdx].hp - damage) };
+
+        const updatedMatch = { ...prev.match, players };
+        matchRef.current = updatedMatch;
+
+        if (players[playerIdx].hp <= 0) {
+          scheduleClearAttack();
+          return {
+            ...prev,
+            match: { ...updatedMatch, winnerId: players[botIdx].userId, phase: "victory" as MatchPhase },
+            winnerId: players[botIdx].userId,
+            phase: "victory",
+            lastAttack: { damage, attacker: players[botIdx].userId },
+            currentRound: { ...prev.currentRound, answeredBy: players[botIdx].userId, correctAnswer: true },
+          };
+        }
+
+        const nextRound = roundIndex + 1;
+        scheduleClearAttack();
+
+        if (nextRound < questionsRef.current.length) {
+          timersRef.current.push(setTimeout(() => startRoundRef.current(updatedMatch, nextRound), 1500));
+        } else {
+          const winner = players[0].hp > players[1].hp ? players[0].userId : players[1].userId;
+          return {
+            ...prev,
+            match: { ...updatedMatch, winnerId: winner, phase: "victory" as MatchPhase },
+            winnerId: winner,
+            phase: "victory",
+            lastAttack: { damage, attacker: players[botIdx].userId },
+            currentRound: { ...prev.currentRound, answeredBy: players[botIdx].userId, correctAnswer: true },
+          };
+        }
+
+        return {
+          ...prev,
+          match: updatedMatch,
+          lastAttack: { damage, attacker: players[botIdx].userId },
+          currentRound: { ...prev.currentRound, answeredBy: players[botIdx].userId, correctAnswer: true },
+        };
+      });
+    }, botDelay);
+  }, [scheduleClearAttack]);
 
   const startRound = useCallback((match: BattleMatch, roundIndex: number) => {
     const question = questionsRef.current[roundIndex];
@@ -116,61 +192,19 @@ export function useLocalBotBattle() {
       endsAt: now + question.timeLimitMs,
     };
 
+    matchRef.current = { ...match, currentRound: round };
+
     setState((s) => ({
       ...s,
       currentRound: round,
       match: { ...match, currentRound: round },
+      lastAttack: null,
     }));
 
-    const botDelay = 2000 + Math.random() * 6000;
-    botAnswerTimerRef.current = setTimeout(() => {
-      setState((prev) => {
-        if (!prev.match || !prev.currentRound || prev.currentRound.answeredBy) return prev;
+    scheduleBotAnswer(match, roundIndex);
+  }, [scheduleBotAnswer]);
 
-        const botCorrect = Math.random() < 0.55;
-        if (!botCorrect) return prev;
-
-        const botIdx = prev.match.players.findIndex((p) => p.userId.startsWith("bot"));
-        const playerIdx = botIdx === 0 ? 1 : 0;
-        const damage = BASE_ATTACK_DAMAGE + Math.floor(Math.random() * 8);
-
-        const players = [...prev.match.players] as [BattlePlayerState, BattlePlayerState];
-        players[playerIdx] = { ...players[playerIdx], hp: Math.max(0, players[playerIdx].hp - damage) };
-
-        const updatedMatch = { ...prev.match, players };
-
-        if (players[playerIdx].hp <= 0) {
-          return {
-            ...prev,
-            match: { ...updatedMatch, winnerId: players[botIdx].userId, phase: "victory" as MatchPhase },
-            winnerId: players[botIdx].userId,
-            phase: "victory",
-            lastAttack: { damage, attacker: players[botIdx].userId },
-          };
-        }
-
-        const nextRound = roundIndex + 1;
-        if (nextRound < questionsRef.current.length) {
-          timersRef.current.push(setTimeout(() => startRound(updatedMatch, nextRound), 1500));
-        } else {
-          const winner = players[0].hp > players[1].hp ? players[0].userId : players[1].userId;
-          return {
-            ...prev,
-            match: { ...updatedMatch, winnerId: winner, phase: "victory" as MatchPhase },
-            winnerId: winner,
-            phase: "victory",
-            lastAttack: { damage, attacker: players[botIdx].userId },
-          };
-        }
-
-        return {
-          ...prev,
-          match: updatedMatch,
-          lastAttack: { damage, attacker: players[botIdx].userId },
-        };
-      });
-    }, botDelay);
-  }, []);
+  startRoundRef.current = startRound;
 
   const joinQueue = useCallback((payload: QueueJoinPayload) => {
     clearTimers();
@@ -233,12 +267,11 @@ export function useLocalBotBattle() {
       winnerId: null,
       lastAttack: null,
       connected: false,
+      stunTick: 0,
     });
   }, []);
 
   const submitAnswer = useCallback((matchId: string, userId: string, roundIndex: number, choiceId: string) => {
-    if (botAnswerTimerRef.current) clearTimeout(botAnswerTimerRef.current);
-
     setState((prev) => {
       if (!prev.match || !prev.currentRound || prev.currentRound.answeredBy) return prev;
       if (prev.currentRound.roundIndex !== roundIndex) return prev;
@@ -248,10 +281,14 @@ export function useLocalBotBattle() {
       const playerIdx = prev.match.players.findIndex((p) => p.userId === userId);
       if (playerIdx < 0) return prev;
 
-      const opponentIdx = playerIdx === 0 ? 1 : 0;
       const players = [...prev.match.players] as [BattlePlayerState, BattlePlayerState];
+      if (Date.now() < players[playerIdx].stunnedUntil) return prev;
+
+      const opponentIdx = playerIdx === 0 ? 1 : 0;
 
       if (correct) {
+        if (botAnswerTimerRef.current) clearTimeout(botAnswerTimerRef.current);
+
         const damage = BASE_ATTACK_DAMAGE + players[playerIdx].combo * 2;
         players[opponentIdx] = { ...players[opponentIdx], hp: Math.max(0, players[opponentIdx].hp - damage) };
         players[playerIdx] = {
@@ -261,19 +298,24 @@ export function useLocalBotBattle() {
         };
 
         if (players[opponentIdx].hp <= 0) {
+          scheduleClearAttack();
           return {
             ...prev,
             match: { ...prev.match, players, winnerId: userId, phase: "victory" as MatchPhase },
             winnerId: userId,
             phase: "victory",
             lastAttack: { damage, attacker: userId },
+            currentRound: { ...prev.currentRound, answeredBy: userId, correctAnswer: true },
           };
         }
 
         const nextRound = roundIndex + 1;
         const updatedMatch = { ...prev.match, players };
+        matchRef.current = updatedMatch;
+        scheduleClearAttack();
+
         if (nextRound < questionsRef.current.length) {
-          timersRef.current.push(setTimeout(() => startRound(updatedMatch, nextRound), 1500));
+          timersRef.current.push(setTimeout(() => startRoundRef.current(updatedMatch, nextRound), 1500));
         }
 
         return {
@@ -284,10 +326,24 @@ export function useLocalBotBattle() {
         };
       }
 
+      // Wrong answer — stun player, clear damage popup, keep bot timer running
       players[playerIdx] = { ...players[playerIdx], combo: 0, stunnedUntil: Date.now() + STUN_DURATION_MS };
-      return { ...prev, match: { ...prev.match, players } };
+      const updatedMatch = { ...prev.match, players };
+      matchRef.current = updatedMatch;
+
+      timersRef.current.push(
+        setTimeout(() => {
+          setState((s) => ({ ...s, stunTick: s.stunTick + 1 }));
+        }, STUN_DURATION_MS + 100)
+      );
+
+      return {
+        ...prev,
+        match: updatedMatch,
+        lastAttack: null,
+      };
     });
-  }, [startRound]);
+  }, [scheduleClearAttack]);
 
   const resetState = useCallback(() => {
     clearTimers();
@@ -301,6 +357,7 @@ export function useLocalBotBattle() {
       winnerId: null,
       lastAttack: null,
       connected: false,
+      stunTick: 0,
     });
   }, []);
 

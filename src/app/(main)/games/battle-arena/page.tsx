@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useReducer } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Swords, Trophy, ShoppingBag, Users, Shield, Sparkles } from "lucide-react";
@@ -66,6 +66,16 @@ export default function BattleArenaPage() {
   }, [battle, profile.userId, selectedMode, completeMatch]);
 
   const player = battle.match?.players.find((p) => p.userId === profile.userId);
+  const stunTick = "stunTick" in battle ? (battle.stunTick as number) : 0;
+  const [, bumpStun] = useReducer((n: number) => n + 1, 0);
+
+  useEffect(() => {
+    if (!player || Date.now() >= player.stunnedUntil) return;
+    const delay = player.stunnedUntil - Date.now() + 50;
+    const t = setTimeout(bumpStun, delay);
+    return () => clearTimeout(t);
+  }, [player?.stunnedUntil, stunTick, bumpStun]);
+
   const stunned = player ? Date.now() < player.stunnedUntil : false;
 
   if (battle.serverChecking) {

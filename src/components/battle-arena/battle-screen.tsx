@@ -45,12 +45,14 @@ export function BattleScreen({
 
   return (
     <div className="relative min-h-[70vh] space-y-4">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {lastAttack && (
           <motion.div
+            key={`${lastAttack.attacker}-${lastAttack.damage}`}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3 }}
             className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
           >
             <span className="text-6xl font-black text-red-500 drop-shadow-lg">
@@ -62,11 +64,14 @@ export function BattleScreen({
 
       {stunned && (
         <motion.div
+          key="stun"
+          initial={{ opacity: 0 }}
           animate={{ opacity: [0.5, 1, 0.5] }}
+          exit={{ opacity: 0 }}
           transition={{ repeat: Infinity, duration: 0.5 }}
           className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 backdrop-blur-sm"
         >
-          <span className="text-2xl font-bold text-yellow-400">⚡ STUNNED!</span>
+          <span className="text-2xl font-bold text-yellow-400">⚡ STUNNED! (2s)</span>
         </motion.div>
       )}
 
