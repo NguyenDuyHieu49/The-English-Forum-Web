@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Clock, Flame, Gamepad2, Package, Sparkles, Swords, Trophy, Zap } from "lucide-react";
+import { Clock, Flame, Gamepad2, Package, Pencil, Sparkles, Swords, Trophy, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PetWidget } from "@/components/gamification/pet-widget";
+import { EditProfileDialog } from "@/components/profile/edit-profile-dialog";
 import { useAppStore } from "@/store/app-store";
 import { xpToNextLevel } from "@/services/gamification";
 import { useTranslation } from "@/hooks/use-translation";
@@ -18,10 +20,12 @@ import { Button } from "@/components/ui/button";
 export default function ProfilePage() {
   const { t } = useTranslation();
   const stats = useAppStore((s) => s.userStats);
+  const userProfile = useAppStore((s) => s.userProfile);
   const { achievements, learningHistory } = useLocalizedContent();
   const arenaProfile = useArenaStore((s) => s.gameProfile);
   const equippedTitle = useArenaStore((s) => s.getEquippedTitle());
   const xpRemaining = xpToNextLevel(stats.xp);
+  const [editOpen, setEditOpen] = useState(false);
 
   const displayAchievements = achievements.map((a) => {
     const stored = stats.achievements.find((s) => s.id === a.id);
@@ -35,28 +39,39 @@ export default function ProfilePage() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center gap-6"
+        className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
       >
-        <Avatar className="h-24 w-24 ring-4 ring-violet-500/20">
-          <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=You" alt={t.common.you} />
-          <AvatarFallback>{t.common.you[0]}</AvatarFallback>
-        </Avatar>
-        <div>
-          <h1 className="text-3xl font-bold">{t.profile.title}</h1>
-          <p className="text-muted-foreground">
-            {t.gamification.level} {stats.level} {t.profile.learnerLevel}
-            {equippedTitle && (
-              <span className="ml-2 text-violet-600">· {equippedTitle}</span>
+        <div className="flex items-center gap-6">
+          <Avatar className="h-24 w-24 ring-4 ring-violet-500/20">
+            <AvatarImage src={userProfile.avatarUrl} alt={userProfile.displayName} />
+            <AvatarFallback>{userProfile.displayName[0] ?? t.common.you[0]}</AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className="text-3xl font-bold">{userProfile.displayName}</h1>
+            <p className="text-muted-foreground">
+              {t.gamification.level} {stats.level} {t.profile.learnerLevel}
+              {equippedTitle && (
+                <span className="ml-2 text-violet-600">· {equippedTitle}</span>
+              )}
+            </p>
+            {userProfile.bio && (
+              <p className="mt-1 max-w-md text-sm text-muted-foreground">{userProfile.bio}</p>
             )}
-          </p>
-          <div className="mt-2 flex items-center gap-1.5 text-sm">
-            <Flame className="h-4 w-4 text-orange-500" />
-            <span>
-              {stats.streak.daily} {t.gamification.dayStreak}
-            </span>
+            <div className="mt-2 flex items-center gap-1.5 text-sm">
+              <Flame className="h-4 w-4 text-orange-500" />
+              <span>
+                {stats.streak.daily} {t.gamification.dayStreak}
+              </span>
+            </div>
           </div>
         </div>
+        <Button variant="outline" onClick={() => setEditOpen(true)}>
+          <Pencil className="mr-2 h-4 w-4" />
+          {t.profile.editProfile}
+        </Button>
       </motion.div>
+
+      <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} />
 
       <Card className="border-violet-500/20 bg-gradient-to-r from-violet-500/5 to-indigo-500/5">
         <CardContent className="space-y-4 p-5">

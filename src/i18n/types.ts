@@ -216,6 +216,19 @@ export type TranslationDictionary = {
     achievements: string;
     learningHistory: string;
     xpToNext: string;
+    editProfile: string;
+    editTitle: string;
+    editDesc: string;
+    displayName: string;
+    displayNamePlaceholder: string;
+    bio: string;
+    bioPlaceholder: string;
+    changeAvatar: string;
+    uploadAvatar: string;
+    resetAvatar: string;
+    nameRequired: string;
+    avatarTooLarge: string;
+    avatarInvalid: string;
   };
   quiz: {
     title: string;

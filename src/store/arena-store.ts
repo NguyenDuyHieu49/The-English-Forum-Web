@@ -27,6 +27,7 @@ interface ArenaState extends ArenaDatabase {
   initArena: () => void;
   setCity: (city: string) => void;
   setCountry: (country: string) => void;
+  setDisplayName: (name: string) => void;
   completeGame: (result: GameSessionResult) => GameRewardBreakdown;
   claimDailyReward: () => "success" | "already_claimed";
   canClaimDailyReward: () => boolean;
@@ -79,6 +80,15 @@ export const useArenaStore = create<ArenaState>()(
       setCountry: (country) =>
         set((s) => ({
           gameProfile: { ...s.gameProfile, country, updatedAt: new Date().toISOString() },
+        })),
+
+      setDisplayName: (name) =>
+        set((s) => ({
+          gameProfile: {
+            ...s.gameProfile,
+            displayName: name.trim() || s.gameProfile.displayName,
+            updatedAt: new Date().toISOString(),
+          },
         })),
 
       completeGame: (result) => {

@@ -6,6 +6,8 @@ import { persist } from "zustand/middleware";
 import type { FocusResult } from "@/types/focus";
 import type { PetMood, Reward, UserStats } from "@/types/gamification";
 import type { InventoryItem, InventoryItemType, InventorySource, OpenLootResult } from "@/types/inventory";
+import type { UserProfile } from "@/types/user-profile";
+import { DEFAULT_USER_PROFILE } from "@/types/user-profile";
 import { MOCK_USER_STATS } from "@/mock/user";
 import { DEFAULT_ENROLLED_COURSE_IDS, PET_FOOD_ITEMS } from "@/constants/gamification";
 import { getDictionary } from "@/i18n";
@@ -31,6 +33,7 @@ interface AppState {
   showDistractionModal: boolean;
   showReward: Reward | null;
   userStats: UserStats;
+  userProfile: UserProfile;
   enrolledCourseIds: string[];
   inventory: InventoryItem[];
   lastCheckInDate: string | null;
@@ -56,6 +59,7 @@ interface AppState {
   isCourseEnrolled: (courseId: string) => boolean;
   setSocialScrollStart: (time: number | null) => void;
   setLocale: (locale: Locale) => void;
+  updateUserProfile: (patch: Partial<UserProfile>) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -68,6 +72,7 @@ export const useAppStore = create<AppState>()(
       showDistractionModal: false,
       showReward: null,
       userStats: MOCK_USER_STATS,
+      userProfile: DEFAULT_USER_PROFILE,
       enrolledCourseIds: DEFAULT_ENROLLED_COURSE_IDS,
       inventory: [],
       lastCheckInDate: null,
@@ -231,6 +236,16 @@ export const useAppStore = create<AppState>()(
       setSocialScrollStart: (time) => set({ socialScrollStart: time }),
 
       setLocale: (locale) => set({ locale }),
+
+      updateUserProfile: (patch) =>
+        set((s) => ({
+          userProfile: {
+            ...s.userProfile,
+            ...patch,
+            displayName: (patch.displayName ?? s.userProfile.displayName).trim() || s.userProfile.displayName,
+            bio: (patch.bio ?? s.userProfile.bio).trim(),
+          },
+        })),
     }),
     {
       name: "tef-store",
@@ -238,6 +253,7 @@ export const useAppStore = create<AppState>()(
         sidebarCollapsed: state.sidebarCollapsed,
         theme: state.theme,
         userStats: state.userStats,
+        userProfile: state.userProfile,
         enrolledCourseIds: state.enrolledCourseIds,
         inventory: state.inventory,
         lastCheckInDate: state.lastCheckInDate,
