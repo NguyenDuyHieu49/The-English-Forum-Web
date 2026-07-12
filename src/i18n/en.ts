@@ -411,6 +411,10 @@ export const en: TranslationDictionary = {
     vietnamese: "Tiếng Việt",
     english: "English",
     currentLanguage: "Current language: English",
+    account: "Account",
+    logout: "Log out",
+    logoutDesc: "Sign out of your account on this device",
+    loggingOut: "Signing out...",
   },
   reading: {
     dictionary: "Dictionary",

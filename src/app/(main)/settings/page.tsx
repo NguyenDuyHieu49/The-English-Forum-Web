@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Bell, Camera, Globe, Mic, Shield, Accessibility } from "lucide-react";
+import { Bell, Camera, Globe, LogOut, Mic, Shield, Accessibility } from "lucide-react";
 import type { Locale } from "@/constants/app";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -10,12 +12,28 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/store/app-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { isFirebaseConfigured, logout } from "@/services/firebase";
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { focusMode, setFocusMode, locale, setLocale } = useAppStore();
   const { t } = useTranslation();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      if (isFirebaseConfigured()) {
+        await logout();
+      }
+      router.replace("/login");
+    } catch {
+      setLoggingOut(false);
+    }
+  };
 
   const settingsGroups = [
     {
@@ -177,6 +195,27 @@ export default function SettingsPage() {
         <CardContent className={cn("p-4 text-center text-sm text-muted-foreground")}>
           <Mic className="mx-auto mb-2 h-5 w-5" />
           {t.settings.currentLanguage}
+        </CardContent>
+      </Card>
+
+      <Card className="border-red-500/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <LogOut className="h-4 w-4 text-red-500" />
+            {t.settings.account}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">{t.settings.logoutDesc}</p>
+          <Button
+            variant="destructive"
+            className="w-full"
+            disabled={loggingOut}
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            {loggingOut ? t.settings.loggingOut : t.settings.logout}
+          </Button>
         </CardContent>
       </Card>
     </div>

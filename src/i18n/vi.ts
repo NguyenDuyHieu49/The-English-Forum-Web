@@ -411,6 +411,10 @@ export const vi: TranslationDictionary = {
     vietnamese: "Tiếng Việt",
     english: "Tiếng Anh",
     currentLanguage: "Ngôn ngữ hiện tại: Tiếng Việt",
+    account: "Tài khoản",
+    logout: "Đăng xuất",
+    logoutDesc: "Đăng xuất khỏi tài khoản trên thiết bị này",
+    loggingOut: "Đang đăng xuất...",
   },
   reading: {
     dictionary: "Từ điển",

@@ -398,6 +398,10 @@ export type TranslationDictionary = {
     vietnamese: string;
     english: string;
     currentLanguage: string;
+    account: string;
+    logout: string;
+    logoutDesc: string;
+    loggingOut: string;
   };
   reading: {
     dictionary: string;
